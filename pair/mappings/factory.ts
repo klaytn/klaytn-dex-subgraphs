@@ -19,6 +19,7 @@ export function handlePairCreated(event: PairCreated): void {
     factory = new Factory(FACTORY_ADDRESS);
     factory.totalPairs = ZERO_BI;
     factory.totalTokens = ZERO_BI;
+    factory.totalTransactions = ZERO_BI;
   }
   factory.totalPairs = factory.totalPairs.plus(ONE_BI);
   factory.save();
@@ -34,6 +35,11 @@ export function handlePairCreated(event: PairCreated): void {
       return;
     }
     token0.decimals = decimals;
+    token0.tradeVolume = ZERO_BD;
+    token0.totalLiquidity = ZERO_BD;
+    token0.totalTransactions = ZERO_BI;
+    token0.save();
+  
     // Factory
     factory.totalTokens = factory.totalTokens.plus(ONE_BI);
   }
@@ -49,27 +55,35 @@ export function handlePairCreated(event: PairCreated): void {
       return;
     }
     token1.decimals = decimals;
+    token1.tradeVolume = ZERO_BD;
+    token1.totalLiquidity = ZERO_BD;
+    token1.totalTransactions = ZERO_BI;
+    token1.save();
 
+    // Factory
     factory.totalTokens = factory.totalTokens.plus(ONE_BI);
   }
 
   // Pair
   let pair = new Pair(event.params.pair.toHex()) as Pair;
-  pair.token0 = token0.id;
-  pair.token1 = token1.id;
-  // pair.name = token0.symbol.concat("-").concat(token1.symbol);
-  pair.hash = event.transaction.hash;
+  pair.name = token0.symbol.concat("-").concat(token1.symbol);
   pair.block = event.block.number;
   pair.timestamp = event.block.timestamp;
+  pair.token0 = token0.id;
+  pair.token1 = token1.id;
+  pair.reserve0 = ZERO_BD;
+  pair.reserve1 = ZERO_BD;
+  pair.totalSupply = ZERO_BD;
+  pair.volumeToken0 = ZERO_BD;
+  pair.volumeToken1 = ZERO_BD;
+  pair.totalTransactions = ZERO_BI;
+  pair.save();
 
   // Factory
   factory.totalPairs = factory.totalPairs.plus(ONE_BI);
 
   // Entities
-  token0.save();
-  token1.save();
-  pair.save();
   factory.save();
 
-  // PairTemplate.create(event.params.pair);
+  PairTemplate.create(event.params.pair);
 }
