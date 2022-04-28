@@ -1,0 +1,31 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Factory
+    network: baobab
+    source:
+      address: "0xEB487a3A623E25cAa668B6D199F1aBa9D2380456"
+      abi: Factory
+      startBlock: 89065284
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Pair
+        - Token
+      abis:
+        - name: Factory
+          file: ./abis/Factory.json
+        - name: KIP7
+          file: ./abis/KIP7.json
+        - name: KIP7NameBytes
+          file: ./abis/KIP7NameBytes.json
+        - name: KIP7SymbolBytes
+          file: ./abis/KIP7SymbolBytes.json
+      eventHandlers:
+        - event: PairCreated(indexed address,indexed address,address,uint256)
+          handler: handlePairCreated
+      file: ./src/factory.ts
