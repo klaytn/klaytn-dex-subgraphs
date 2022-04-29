@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "create": "graph create klaytn-subgraph/blocks --node https://api.thegraph.com/deploy/",
-    "create-local": "graph create klaytn-subgraph/blocks --node http://127.0.0.1:8020",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy klaytn-subgraph/blocks --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy-local": "graph deploy klaytn-subgraph/blocks --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ klaytn-subgraph/blocks",
+    "create-local": "graph create --node http://localhost:8020/ klaytn-subgraph/blocks",
+    "remove-local": "graph remove --node http://localhost:8020/ klaytn-subgraph/blocks",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 klaytn-subgraph/blocks"
   }
- 
 }
