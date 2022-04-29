@@ -13,7 +13,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./mappings/factory.ts
+      file: ./src/factory.ts
       entities:
         - Pair
         - Token
@@ -39,7 +39,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./mappings/core.ts
+      file: ./src/core.ts
       entities:
         - Pair
         - Token

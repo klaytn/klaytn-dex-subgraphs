@@ -1,0 +1,14 @@
+{
+  "name": "pairs",
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "create": "graph create klaytn-subgraph/pairs --node https://api.thegraph.com/deploy/",
+    "create-local": "graph create klaytn-subgraph/pairs --node http://127.0.0.1:8020",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy klaytn-subgraph/pairs --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy-local": "graph deploy klaytn-subgraph/pairs --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020"
+  }
+ 
+}

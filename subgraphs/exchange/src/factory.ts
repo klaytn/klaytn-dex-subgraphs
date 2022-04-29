@@ -10,6 +10,7 @@ import {
   fetchTokenSymbol,
   fetchTokenName,
   fetchTokenDecimals,
+  fetchTokenTotalSupply,
 } from "./utils";
 
 export function handlePairCreated(event: PairCreated): void {
@@ -30,11 +31,8 @@ export function handlePairCreated(event: PairCreated): void {
     token0 = new Token(event.params.token0.toHex());
     token0.name = fetchTokenName(event.params.token0);
     token0.symbol = fetchTokenSymbol(event.params.token0);
-    let decimals = fetchTokenDecimals(event.params.token0);
-    if (decimals === null) {
-      return;
-    }
-    token0.decimals = decimals;
+    token0.totalSupply = fetchTokenTotalSupply(event.params.token0);
+    token0.decimals = fetchTokenDecimals(event.params.token0);
     token0.tradeVolume = ZERO_BD;
     token0.totalLiquidity = ZERO_BD;
     token0.totalTransactions = ZERO_BI;
@@ -50,11 +48,8 @@ export function handlePairCreated(event: PairCreated): void {
     token1 = new Token(event.params.token1.toHex());
     token1.name = fetchTokenName(event.params.token1);
     token1.symbol = fetchTokenSymbol(event.params.token1);
-    let decimals = fetchTokenDecimals(event.params.token1);
-    if (decimals === null) {
-      return;
-    }
-    token1.decimals = decimals;
+    token1.totalSupply = fetchTokenTotalSupply(event.params.token1);
+    token1.decimals = fetchTokenDecimals(event.params.token1);
     token1.tradeVolume = ZERO_BD;
     token1.totalLiquidity = ZERO_BD;
     token1.totalTransactions = ZERO_BI;
