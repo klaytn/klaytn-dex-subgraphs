@@ -122,3 +122,55 @@ type Swap @entity {
   to: Bytes!
   logIndex: BigInt
 }
+
+type FactoryDayData @entity {
+  id: ID! # timestamp rounded to current day by dividing by 86400
+  date: Int!
+  totalTransactions: BigInt!
+}
+
+type PairHourData @entity {
+  id: ID!
+  timestamp: Int! # unix timestamp for start of hour
+  address: Bytes! # pair address
+  # tokens
+  token0: Token!
+  token1: Token!
+  # reserves
+  reserve0: BigDecimal!
+  reserve1: BigDecimal!
+  # total supply for LP historical returns
+  totalSupply: BigDecimal!
+  # volume stats
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
+  totalTransactions: BigInt!
+}
+
+type PairDayData @entity {
+  id: ID!
+  timestamp: Int! # unix timestamp for start of day
+  address: Bytes! # pair address
+  token0: Token!
+  token1: Token!
+  # reserves
+  reserve0: BigDecimal!
+  reserve1: BigDecimal!
+  # total supply for LP historical returns
+  totalSupply: BigDecimal!
+  # volume stats
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
+  totalTransactions: BigInt!
+}
+
+type TokenDayData @entity {
+  id: ID!
+  date: Int!
+  token: Token!
+  # volume stats
+  dailyVolumeToken: BigDecimal!
+  dailyTxns: BigInt!
+  # liquidity stats
+  totalLiquidityToken: BigDecimal!
+}
