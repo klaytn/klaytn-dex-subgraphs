@@ -8,10 +8,13 @@
   ],
   "scripts": {
     "codegen": "lerna run codegen",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "build-testnet": "lerna run build -- --network baobab",
+    "create-local": "lerna run create-local",
+    "deploy-local": "lerna run deploy-local"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.28.1",
+    "@graphprotocol/graph-cli": "^0.29.2",
     "@graphprotocol/graph-ts": "^0.26.0",
     "lerna": "^4.0.0"
   }

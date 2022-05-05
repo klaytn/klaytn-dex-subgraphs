@@ -12,7 +12,7 @@ export function updateFactoryDayData(event: ethereum.Event): FactoryDayData {
 
   if (factoryDayData === null) {
     factoryDayData = new FactoryDayData(dayID.toString());
-    factoryDayData.date = dayStartTimestamp;
+    factoryDayData.timestamp = dayStartTimestamp;
   }
 
   factoryDayData.totalTransactions = factory.totalTransactions;
@@ -84,14 +84,14 @@ export function updateTokenDayData(token: Token, event: ethereum.Event): TokenDa
 
   if (tokenDayData === null) {
     tokenDayData = new TokenDayData(tokenDayID);
-    tokenDayData.date = dayStartTimestamp;
+    tokenDayData.timestamp = dayStartTimestamp;
     tokenDayData.token = token.id;
     tokenDayData.dailyVolumeToken = ZERO_BD;
-    tokenDayData.dailyTxns = ZERO_BI;
+    tokenDayData.totalTransactions = ZERO_BI;
   }
 
   tokenDayData.totalLiquidityToken = token.totalLiquidity;
-  tokenDayData.dailyTxns = tokenDayData.dailyTxns.plus(ONE_BI);
+  tokenDayData.totalTransactions = tokenDayData.totalTransactions.plus(ONE_BI);
   tokenDayData.save();
 
   return tokenDayData as TokenDayData;

@@ -1,0 +1,14 @@
+{
+  "baobab": {
+    "DexRouter": {
+      "address": "0xB0B695584234F2CC16266588b2b951F3d2885705",
+      "startBlock": 89065284
+    }
+  },
+  "mainnet": {
+    "DexRouter": {
+      "address": "0xB0B695584234F2CC16266588b2b951F3d2885705",
+      "startBlock": 89065284
+    }
+  }
+}

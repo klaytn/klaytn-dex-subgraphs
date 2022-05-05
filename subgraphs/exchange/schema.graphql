@@ -158,7 +158,7 @@ type Swap @entity {
 
 type FactoryDayData @entity {
   id: ID! # timestamp rounded to current day by dividing by 86400
-  date: Int!
+  timestamp: Int!
   totalTransactions: BigInt!
 }
 
@@ -199,11 +199,11 @@ type PairDayData @entity {
 
 type TokenDayData @entity {
   id: ID!
-  date: Int!
+  timestamp: Int! # unix timestamp for start of day
   token: Token!
   # volume stats
   dailyVolumeToken: BigDecimal!
-  dailyTxns: BigInt!
+  totalTransactions: BigInt!
   # liquidity stats
   totalLiquidityToken: BigDecimal!
 }
