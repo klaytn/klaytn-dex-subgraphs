@@ -29,6 +29,7 @@ type Token @entity {
   # derived fields
   pairBase: [Pair!]! @derivedFrom(field: "token0")
   pairQuote: [Pair!]! @derivedFrom(field: "token1")
+  dayData: [TokenDayData!] @derivedFrom(field: "token")
 }
 
 type Pair @entity {
@@ -60,6 +61,8 @@ type Pair @entity {
   mints: [Mint!]! @derivedFrom(field: "pair")
   burns: [Burn!]! @derivedFrom(field: "pair")
   swaps: [Swap!]! @derivedFrom(field: "pair")
+  dayData: [PairDayData!] @derivedFrom(field: "pair")
+  hourData: [PairHourData!] @derivedFrom(field: "pair")
 }
 
 type Transaction @entity {
