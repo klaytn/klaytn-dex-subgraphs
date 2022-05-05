@@ -4,10 +4,8 @@ Klaytn DEX Factory
 type Factory @entity {
   "ID (address)"
   id: ID!
-
   "Total of Pairs"
   totalPairs: BigInt!
-
   "Total of Tokens"
   totalTokens: BigInt!
 }
@@ -32,17 +30,12 @@ Klaytn DEX Pairs (KlayLP)
 type Pair @entity {
   "ID (address)"
   id: ID!
-
-  "Token 0"
-  token0: Token!
-  "Token 1"
-  token1: Token!
   "Token0 Symbol - Token1 Symbol"
   name: String!
-  "Transaction Hash"
-  hash: Bytes!
-  "Block number"
+  # creation stats
   block: BigInt!
-  "Block timestamp"
   timestamp: BigInt!
+  # mirrored from the smart contract
+  token0: Token!
+  token1: Token!
 }

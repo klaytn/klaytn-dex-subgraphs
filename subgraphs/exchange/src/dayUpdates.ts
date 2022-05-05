@@ -8,9 +8,13 @@ export function updateFactoryDayData(event: ethereum.Event): FactoryDayData {
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
-  let factoryDayData = (FactoryDayData.load(dayID.toString()) || new FactoryDayData(dayID.toString())) as FactoryDayData;
+  let factoryDayData = FactoryDayData.load(dayID.toString());
 
-  factoryDayData.date = dayStartTimestamp;
+  if (factoryDayData === null) {
+    factoryDayData = new FactoryDayData(dayID.toString());
+    factoryDayData.date = dayStartTimestamp;
+  }
+
   factoryDayData.totalTransactions = factory.totalTransactions;
   factoryDayData.save();
 
@@ -23,16 +27,19 @@ export function updatePairDayData(event: ethereum.Event): PairDayData {
   let dayStartTimestamp = dayID * 86400;
   let dayPairID = event.address.toHex().concat("-").concat(BigInt.fromI32(dayID).toString());
   let pair = Pair.load(event.address.toHex()) as Pair;
-  let pairDayData = PairDayData.load(dayPairID) || new PairDayData(dayPairID);
+  let pairDayData = PairDayData.load(dayPairID);
 
-  pairDayData = new PairDayData(dayPairID);
-  pairDayData.timestamp = dayStartTimestamp;
-  pairDayData.token0 = pair.token0;
-  pairDayData.token1 = pair.token1;
-  pairDayData.address = event.address;
-  pairDayData.volumeToken0 = ZERO_BD;
-  pairDayData.volumeToken1 = ZERO_BD;
-  pairDayData.totalTransactions = ZERO_BI;
+  if (pairDayData === null) {
+    pairDayData = new PairDayData(dayPairID);
+    pairDayData.timestamp = dayStartTimestamp;
+    pairDayData.token0 = pair.token0;
+    pairDayData.token1 = pair.token1;
+    pairDayData.address = event.address;
+    pairDayData.volumeToken0 = ZERO_BD;
+    pairDayData.volumeToken1 = ZERO_BD;
+    pairDayData.totalTransactions = ZERO_BI;
+  }
+
   pairDayData.totalSupply = pair.totalSupply;
   pairDayData.reserve0 = pair.reserve0;
   pairDayData.reserve1 = pair.reserve1;
@@ -48,14 +55,17 @@ export function updatePairHourData(event: ethereum.Event): PairHourData {
   let hourStartUnix = hourIndex * 3600;
   let hourPairID = event.address.toHex().concat("-").concat(BigInt.fromI32(hourIndex).toString());
   let pair = Pair.load(event.address.toHex()) as Pair;
-  let pairHourData = PairHourData.load(hourPairID) || new PairHourData(hourPairID);
+  let pairHourData = PairHourData.load(hourPairID);
 
-  pairHourData = new PairHourData(hourPairID);
-  pairHourData.timestamp = hourStartUnix;
-  pairHourData.address = event.address;
-  pairHourData.volumeToken0 = ZERO_BD;
-  pairHourData.volumeToken1 = ZERO_BD;
-  pairHourData.totalTransactions = ZERO_BI;
+  if (pairHourData === null) {
+    pairHourData = new PairHourData(hourPairID);
+    pairHourData.timestamp = hourStartUnix;
+    pairHourData.address = event.address;
+    pairHourData.volumeToken0 = ZERO_BD;
+    pairHourData.volumeToken1 = ZERO_BD;
+    pairHourData.totalTransactions = ZERO_BI;
+  }
+
   pairHourData.totalSupply = pair.totalSupply;
   pairHourData.reserve0 = pair.reserve0;
   pairHourData.reserve1 = pair.reserve1;
@@ -70,13 +80,16 @@ export function updateTokenDayData(token: Token, event: ethereum.Event): TokenDa
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
   let tokenDayID = token.id.toString().concat("-").concat(BigInt.fromI32(dayID).toString());
-  let tokenDayData = TokenDayData.load(tokenDayID) || new TokenDayData(tokenDayID);
+  let tokenDayData = TokenDayData.load(tokenDayID);
 
-  tokenDayData = new TokenDayData(tokenDayID);
-  tokenDayData.date = dayStartTimestamp;
-  tokenDayData.token = token.id;
-  tokenDayData.dailyVolumeToken = ZERO_BD;
-  tokenDayData.dailyTxns = ZERO_BI;
+  if (tokenDayData === null) {
+    tokenDayData = new TokenDayData(tokenDayID);
+    tokenDayData.date = dayStartTimestamp;
+    tokenDayData.token = token.id;
+    tokenDayData.dailyVolumeToken = ZERO_BD;
+    tokenDayData.dailyTxns = ZERO_BI;
+  }
+
   tokenDayData.totalLiquidityToken = token.totalLiquidity;
   tokenDayData.dailyTxns = tokenDayData.dailyTxns.plus(ONE_BI);
   tokenDayData.save();
