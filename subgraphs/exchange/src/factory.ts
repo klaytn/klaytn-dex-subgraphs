@@ -22,8 +22,6 @@ export function handlePairCreated(event: PairCreated): void {
     factory.totalTokens = ZERO_BI;
     factory.totalTransactions = ZERO_BI;
   }
-  factory.totalPairs = factory.totalPairs.plus(ONE_BI);
-  factory.save();
 
   let token0 = Token.load(event.params.token0.toHex());
 
@@ -69,9 +67,12 @@ export function handlePairCreated(event: PairCreated): void {
   pair.reserve0 = ZERO_BD;
   pair.reserve1 = ZERO_BD;
   pair.totalSupply = ZERO_BD;
+  pair.token0Price = ZERO_BD;
+  pair.token1Price = ZERO_BD;
   pair.volumeToken0 = ZERO_BD;
   pair.volumeToken1 = ZERO_BD;
   pair.totalTransactions = ZERO_BI;
+  pair.liquidityProviderCount = ZERO_BI;
   pair.save();
 
   // Factory

@@ -165,10 +165,7 @@ type FactoryDayData @entity {
 type PairHourData @entity {
   id: ID!
   timestamp: Int! # unix timestamp for start of hour
-  address: Bytes! # pair address
-  # tokens
-  token0: Token!
-  token1: Token!
+  pair: Pair!
   # reserves
   reserve0: BigDecimal!
   reserve1: BigDecimal!
@@ -183,9 +180,7 @@ type PairHourData @entity {
 type PairDayData @entity {
   id: ID!
   timestamp: Int! # unix timestamp for start of day
-  address: Bytes! # pair address
-  token0: Token!
-  token1: Token!
+  pair: Pair!
   # reserves
   reserve0: BigDecimal!
   reserve1: BigDecimal!

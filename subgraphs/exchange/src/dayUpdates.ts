@@ -32,9 +32,7 @@ export function updatePairDayData(event: ethereum.Event): PairDayData {
   if (pairDayData === null) {
     pairDayData = new PairDayData(dayPairID);
     pairDayData.timestamp = dayStartTimestamp;
-    pairDayData.token0 = pair.token0;
-    pairDayData.token1 = pair.token1;
-    pairDayData.address = event.address;
+    pairDayData.pair = event.address.toHex();
     pairDayData.volumeToken0 = ZERO_BD;
     pairDayData.volumeToken1 = ZERO_BD;
     pairDayData.totalTransactions = ZERO_BI;
@@ -60,7 +58,7 @@ export function updatePairHourData(event: ethereum.Event): PairHourData {
   if (pairHourData === null) {
     pairHourData = new PairHourData(hourPairID);
     pairHourData.timestamp = hourStartUnix;
-    pairHourData.address = event.address;
+    pairHourData.pair = event.address.toHex();
     pairHourData.volumeToken0 = ZERO_BD;
     pairHourData.volumeToken1 = ZERO_BD;
     pairHourData.totalTransactions = ZERO_BI;
