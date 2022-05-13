@@ -94,12 +94,11 @@ export function fetchTokenName(tokenAddress: Address): string {
 
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
   let contract = KIP7.bind(tokenAddress);
-  let decimalValue = null;
   let decimalResult = contract.try_decimals();
   if (!decimalResult.reverted) {
-    decimalValue = decimalResult.value;
+    return BigInt.fromI32(decimalResult.value as i32);
   }
-  return BigInt.fromI32(decimalValue as i32);
+  return ZERO_BI;
 }
 
 export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
