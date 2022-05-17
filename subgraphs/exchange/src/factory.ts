@@ -1,9 +1,10 @@
 /* eslint-disable prefer-const */
-import { Factory, Pair, Token } from "../generated/schema";
+import { Factory, Pair, Token, Bundle } from "../generated/schema";
 import { Pair as PairTemplate } from "../generated/templates";
 import { PairCreated } from "../generated/Factory/Factory";
 import {
   FACTORY_ADDRESS,
+  KlayOracleAddress,
   ZERO_BD,
   ZERO_BI,
   ONE_BI,
@@ -21,6 +22,10 @@ export function handlePairCreated(event: PairCreated): void {
     factory.totalPairs = ZERO_BI;
     factory.totalTokens = ZERO_BI;
     factory.totalTransactions = ZERO_BI;
+
+    let bundle = new Bundle(KlayOracleAddress);
+    bundle.klayPrice = ZERO_BD;
+    bundle.save();
   }
 
   let token0 = Token.load(event.params.token0.toHex());

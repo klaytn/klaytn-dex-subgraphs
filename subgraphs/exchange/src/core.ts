@@ -8,12 +8,15 @@ import {
   Mint as MintEvent,
   Burn as BurnEvent,
   Swap as SwapEvent,
+  Bundle
 } from "../generated/schema";
 import { Pair as PairContract, Mint, Burn, Swap, Transfer, Sync } from "../generated/templates/Pair/Pair";
 import { updatePairDayData, updateTokenDayData, updateFactoryDayData, updatePairHourData } from "./dayUpdates";
+import { getKlayPriceInUSD } from "./priceUpdates";
 import {
   ADDRESS_ZERO,
   FACTORY_ADDRESS,
+  KlayOracleAddress,
   ONE_BI,
   ZERO_BD,
   BI_18,
@@ -212,6 +215,7 @@ export function handleSync(event: Sync): void {
   let token0 = Token.load(pair.token0)!;
   let token1 = Token.load(pair.token1)!;
   let factory = Factory.load(FACTORY_ADDRESS)!;
+  
 
   // reset token total liquidity amounts
   token0.totalLiquidity = token0.totalLiquidity.minus(pair.reserve0);
@@ -224,6 +228,10 @@ export function handleSync(event: Sync): void {
   else pair.token0Price = ZERO_BD;
   if (pair.reserve0.notEqual(ZERO_BD)) pair.token1Price = pair.reserve1.div(pair.reserve0);
   else pair.token1Price = ZERO_BD;
+
+  let bundle = Bundle.load(KlayOracleAddress)!;  
+  bundle.klayPrice = getKlayPriceInUSD();
+  bundle.save();
 
   // now correctly set liquidity amounts for each token
   token0.totalLiquidity = token0.totalLiquidity.plus(pair.reserve0);

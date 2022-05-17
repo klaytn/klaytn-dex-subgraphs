@@ -48,6 +48,8 @@ templates:
           file: ./abis/Factory.json
         - name: Pair
           file: ./abis/Pair.json
+        - name: KlayOracle
+          file: ./abis/KlayOracle.json
       eventHandlers:
         - event: Mint(indexed address,uint256,uint256)
           handler: handleMint
