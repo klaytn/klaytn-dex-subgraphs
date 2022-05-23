@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
-import { BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { Pair, Token, Factory, FactoryDayData, PairDayData, PairHourData, TokenDayData } from "../generated/schema";
-import { ONE_BI, ZERO_BD, ZERO_BI, FACTORY_ADDRESS } from "./utils";
+import { BigInt, ethereum, BigDecimal } from "@graphprotocol/graph-ts";
+import { Pair, Token, Factory, FactoryDayData, PairDayData, PairHourData, TokenDayData, Bundle } from "../generated/schema";
+import { ONE_BI, ZERO_BD, ZERO_BI, FACTORY_ADDRESS, KlayOracleAddress } from "./utils";
 
 export function updateFactoryDayData(event: ethereum.Event): FactoryDayData {
   let factory = Factory.load(FACTORY_ADDRESS) as Factory;
@@ -35,12 +35,14 @@ export function updatePairDayData(event: ethereum.Event): PairDayData {
     pairDayData.pair = event.address.toHex();
     pairDayData.volumeToken0 = ZERO_BD;
     pairDayData.volumeToken1 = ZERO_BD;
+    pairDayData.volumeUSD = ZERO_BD
     pairDayData.totalTransactions = ZERO_BI;
   }
 
   pairDayData.totalSupply = pair.totalSupply;
   pairDayData.reserve0 = pair.reserve0;
   pairDayData.reserve1 = pair.reserve1;
+  pairDayData.reserveUSD = pair.reserveUSD;
   pairDayData.totalTransactions = pairDayData.totalTransactions.plus(ONE_BI);
   pairDayData.save();
 
@@ -61,12 +63,14 @@ export function updatePairHourData(event: ethereum.Event): PairHourData {
     pairHourData.pair = event.address.toHex();
     pairHourData.volumeToken0 = ZERO_BD;
     pairHourData.volumeToken1 = ZERO_BD;
+    pairHourData.volumeUSD = ZERO_BD
     pairHourData.totalTransactions = ZERO_BI;
   }
 
   pairHourData.totalSupply = pair.totalSupply;
   pairHourData.reserve0 = pair.reserve0;
   pairHourData.reserve1 = pair.reserve1;
+  pairHourData.reserveUSD = pair.reserveUSD;
   pairHourData.totalTransactions = pairHourData.totalTransactions.plus(ONE_BI);
   pairHourData.save();
 
@@ -74,6 +78,7 @@ export function updatePairHourData(event: ethereum.Event): PairHourData {
 }
 
 export function updateTokenDayData(token: Token, event: ethereum.Event): TokenDayData {
+  let bundle = Bundle.load(KlayOracleAddress)!;
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
@@ -84,11 +89,15 @@ export function updateTokenDayData(token: Token, event: ethereum.Event): TokenDa
     tokenDayData = new TokenDayData(tokenDayID);
     tokenDayData.timestamp = dayStartTimestamp;
     tokenDayData.token = token.id;
+    tokenDayData.priceUSD = token.derivedKLAY.times(bundle.klayPrice)
     tokenDayData.dailyVolumeToken = ZERO_BD;
     tokenDayData.totalTransactions = ZERO_BI;
+    tokenDayData.totalLiquidityUSD = ZERO_BD;
   }
-
+  tokenDayData.priceUSD = token.derivedKLAY.times(bundle.klayPrice)
   tokenDayData.totalLiquidityToken = token.totalLiquidity;
+  tokenDayData.totalLiquidityKLAY = token.totalLiquidity.times(token.derivedKLAY as BigDecimal);
+  tokenDayData.totalLiquidityUSD = tokenDayData.totalLiquidityKLAY.times(bundle.klayPrice)
   tokenDayData.totalTransactions = tokenDayData.totalTransactions.plus(ONE_BI);
   tokenDayData.save();
 
