@@ -22,10 +22,15 @@ type Token @entity {
   totalSupply: BigInt!
   # token specific volume
   tradeVolume: BigDecimal!
+  tradeVolumeUSD: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
   # liquidity across all pairs
   totalLiquidity: BigDecimal!
   # transactions across all pairs
   totalTransactions: BigInt!
+  # derived prices
+  derivedKLAY: BigDecimal!
+  derivedUSD: BigDecimal!
   # derived fields
   pairBase: [Pair!]! @derivedFrom(field: "token0")
   pairQuote: [Pair!]! @derivedFrom(field: "token1")
@@ -46,12 +51,17 @@ type Pair @entity {
   reserve0: BigDecimal!
   reserve1: BigDecimal!
   totalSupply: BigDecimal!
+  # derived liquidity
+  reserveKLAY: BigDecimal!
+  reserveUSD: BigDecimal!
   # Price in terms of the asset pair
   token0Price: BigDecimal!
   token1Price: BigDecimal!
   # lifetime volume stats
   volumeToken0: BigDecimal!
   volumeToken1: BigDecimal!
+  volumeUSD: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
   totalTransactions: BigInt!
   # Fields used to help derived relationship
   liquidityProviderCount: BigInt! # used to detect new exchanges
@@ -116,6 +126,8 @@ type Mint @entity {
   amount0: BigDecimal
   amount1: BigDecimal
   logIndex: BigInt
+  # derived amount based on available prices of tokens
+  amountUSD: BigDecimal
   # optional fee fields, if a Transfer event is fired in _mintFee
   feeTo: Bytes
   feeLiquidity: BigDecimal
@@ -135,7 +147,9 @@ type Burn @entity {
   amount1: BigDecimal
   to: Bytes
   logIndex: BigInt
-  # mark uncomplete in BNB case
+  # derived amount based on available prices of tokens
+  amountUSD: BigDecimal
+  # mark uncomplete in KLAY case
   needsComplete: Boolean!
   # optional fee fields, if a Transfer event is fired in _mintFee
   feeTo: Bytes
@@ -157,6 +171,8 @@ type Swap @entity {
   amount1Out: BigDecimal!
   to: Bytes! # account address
   logIndex: BigInt
+  # derived info
+  amountUSD: BigDecimal!
 }
 
 type FactoryDayData @entity {
@@ -174,9 +190,12 @@ type PairHourData @entity {
   reserve1: BigDecimal!
   # total supply for LP historical returns
   totalSupply: BigDecimal!
+  # derived liquidity
+  reserveUSD: BigDecimal!
   # volume stats
   volumeToken0: BigDecimal!
   volumeToken1: BigDecimal!
+  volumeUSD: BigDecimal!
   totalTransactions: BigInt!
 }
 
@@ -189,9 +208,12 @@ type PairDayData @entity {
   reserve1: BigDecimal!
   # total supply for LP historical returns
   totalSupply: BigDecimal!
+  # derived liquidity
+  reserveUSD: BigDecimal!
   # volume stats
   volumeToken0: BigDecimal!
   volumeToken1: BigDecimal!
+  volumeUSD: BigDecimal!
   totalTransactions: BigInt!
 }
 
@@ -204,6 +226,10 @@ type TokenDayData @entity {
   totalTransactions: BigInt!
   # liquidity stats
   totalLiquidityToken: BigDecimal!
+  totalLiquidityKLAY: BigDecimal!
+  totalLiquidityUSD: BigDecimal!
+  # price stats
+  priceUSD: BigDecimal!
 }
 
 type Bundle @entity {

@@ -12,7 +12,7 @@ import {
 } from "../generated/schema";
 import { Pair as PairContract, Mint, Burn, Swap, Transfer, Sync } from "../generated/templates/Pair/Pair";
 import { updatePairDayData, updateTokenDayData, updateFactoryDayData, updatePairHourData } from "./dayUpdates";
-import { getKlayPriceInUSD } from "./priceUpdates";
+import { getKlayPriceInUSD, getTrackedVolumeUSD, findKlayPerToken } from "./priceUpdates";
 import {
   ADDRESS_ZERO,
   FACTORY_ADDRESS,
@@ -233,6 +233,20 @@ export function handleSync(event: Sync): void {
   bundle.klayPrice = getKlayPriceInUSD();
   bundle.save();
 
+  token0.derivedKLAY = findKlayPerToken(token0 as Token);
+  token0.derivedUSD = token0.derivedKLAY.times(bundle.klayPrice);
+  token0.save();
+ 
+  token1.derivedKLAY = findKlayPerToken(token1 as Token);;
+  token1.derivedUSD = token1.derivedKLAY.times(bundle.klayPrice);
+  token1.save();
+
+  // use derived amounts within pair
+  pair.reserveKLAY = pair.reserve0
+    .times(token0.derivedKLAY as BigDecimal)
+    .plus(pair.reserve1.times(token1.derivedKLAY as BigDecimal));
+  pair.reserveUSD = pair.reserveKLAY.times(bundle.klayPrice);
+
   // now correctly set liquidity amounts for each token
   token0.totalLiquidity = token0.totalLiquidity.plus(pair.reserve0);
   token1.totalLiquidity = token1.totalLiquidity.plus(pair.reserve1);
@@ -263,6 +277,13 @@ export function handleMint(event: Mint): void {
   token0.totalTransactions = token0.totalTransactions.plus(ONE_BI);
   token1.totalTransactions = token1.totalTransactions.plus(ONE_BI);
 
+  // get new amounts of USD and KLAY for tracking
+  let bundle = Bundle.load(KlayOracleAddress)!;
+  let amountTotalUSD = token1.derivedKLAY
+    .times(token1Amount)
+    .plus(token0.derivedKLAY.times(token0Amount))
+    .times(bundle.klayPrice);
+
   // update txn counts
   pair.totalTransactions = pair.totalTransactions.plus(ONE_BI);
   factory.totalTransactions = factory.totalTransactions.plus(ONE_BI);
@@ -277,6 +298,7 @@ export function handleMint(event: Mint): void {
   mint.amount0 = token0Amount as BigDecimal;
   mint.amount1 = token1Amount as BigDecimal;
   mint.logIndex = event.logIndex;
+  mint.amountUSD = amountTotalUSD as BigDecimal;
   mint.save();
 
   // update the LP position
@@ -308,6 +330,13 @@ export function handleBurn(event: Burn): void {
   token0.totalTransactions = token0.totalTransactions.plus(ONE_BI);
   token1.totalTransactions = token1.totalTransactions.plus(ONE_BI);
 
+  // get new amounts of USD and KLAY for tracking
+  let bundle = Bundle.load(KlayOracleAddress)!;
+  let amountTotalUSD = token1.derivedKLAY
+    .times(token1Amount)
+    .plus(token0.derivedKLAY.times(token0Amount))
+    .times(bundle.klayPrice);
+
   // update txn counts
   factory.totalTransactions = factory.totalTransactions.plus(ONE_BI);
   pair.totalTransactions = pair.totalTransactions.plus(ONE_BI);
@@ -324,6 +353,7 @@ export function handleBurn(event: Burn): void {
   burn.amount1 = token1Amount as BigDecimal;
   // burn.to = event.params.to
   burn.logIndex = event.logIndex;
+  burn.amountUSD = amountTotalUSD as BigDecimal;
   burn.save();
 
   // update the LP position
@@ -350,17 +380,50 @@ export function handleSwap(event: Swap): void {
   let amount0Total = amount0Out.plus(amount0In);
   let amount1Total = amount1Out.plus(amount1In);
 
+  // BNB/USD prices
+  let bundle = Bundle.load(KlayOracleAddress)!;
+
+  // get total amounts of derived USD and KLAY for tracking
+  let derivedAmountKLAY = token1.derivedKLAY
+    .times(amount1Total)
+    .plus(token0.derivedKLAY.times(amount0Total))
+    .div(BigDecimal.fromString('2'));
+  let derivedAmountUSD = derivedAmountKLAY.times(bundle.klayPrice);
+
+  // only accounts for volume through white listed tokens
+  let trackedAmountUSD = getTrackedVolumeUSD(
+    bundle as Bundle,
+    amount0Total,
+    token0 as Token,
+    amount1Total,
+    token1 as Token
+  );
+
+  let trackedAmountKLAY: BigDecimal;
+  if (bundle.klayPrice.equals(ZERO_BD)) {
+    trackedAmountKLAY = ZERO_BD
+  } else {
+    trackedAmountKLAY = trackedAmountUSD.div(bundle.klayPrice)
+  }
+
   // update tokens global volume and token liquidity stats
   token0.tradeVolume = token0.tradeVolume.plus(amount0In.plus(amount0Out));
+  token0.tradeVolumeUSD = token0.tradeVolumeUSD.plus(trackedAmountUSD);
+  token0.untrackedVolumeUSD = token0.untrackedVolumeUSD.plus(derivedAmountUSD);
+
   token1.tradeVolume = token1.tradeVolume.plus(amount1In.plus(amount1Out));
+  token1.tradeVolumeUSD = token1.tradeVolumeUSD.plus(trackedAmountUSD);
+  token1.untrackedVolumeUSD = token1.untrackedVolumeUSD.plus(derivedAmountUSD);
 
   // update txn counts
   token0.totalTransactions = token0.totalTransactions.plus(ONE_BI);
   token1.totalTransactions = token1.totalTransactions.plus(ONE_BI);
 
   // update pair volume data, use tracked amount if we have it as its probably more accurate
+  pair.volumeUSD = pair.volumeUSD.plus(trackedAmountUSD);
   pair.volumeToken0 = pair.volumeToken0.plus(amount0Total);
   pair.volumeToken1 = pair.volumeToken1.plus(amount1Total);
+  pair.untrackedVolumeUSD = pair.untrackedVolumeUSD.plus(derivedAmountUSD);
   pair.totalTransactions = pair.totalTransactions.plus(ONE_BI);
   pair.save();
 
@@ -404,6 +467,8 @@ export function handleSwap(event: Swap): void {
   swap.to = event.params.to;
   swap.from = event.transaction.from;
   swap.logIndex = event.logIndex;
+  // use the tracked amount if we have it
+  swap.amountUSD = trackedAmountUSD === ZERO_BD ? derivedAmountUSD : trackedAmountUSD;
   swap.save();
 
   // update the transaction
@@ -423,11 +488,13 @@ export function handleSwap(event: Swap): void {
   // swap specific updating for pair
   pairDayData.volumeToken0 = pairDayData.volumeToken0.plus(amount0Total);
   pairDayData.volumeToken1 = pairDayData.volumeToken1.plus(amount1Total);
+  pairDayData.volumeUSD = pairDayData.volumeUSD.plus(trackedAmountUSD);
   pairDayData.save();
 
   // update hourly pair data
   pairHourData.volumeToken0 = pairHourData.volumeToken0.plus(amount0Total);
   pairHourData.volumeToken1 = pairHourData.volumeToken1.plus(amount1Total);
+  pairHourData.volumeUSD = pairHourData.volumeUSD.plus(trackedAmountUSD)
   pairHourData.save();
 
   // swap specific updating for token0

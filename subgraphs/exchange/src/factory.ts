@@ -37,8 +37,12 @@ export function handlePairCreated(event: PairCreated): void {
     token0.totalSupply = fetchTokenTotalSupply(event.params.token0);
     token0.decimals = fetchTokenDecimals(event.params.token0);
     token0.tradeVolume = ZERO_BD;
+    token0.tradeVolumeUSD = ZERO_BD;
+    token0.untrackedVolumeUSD = ZERO_BD;
     token0.totalLiquidity = ZERO_BD;
     token0.totalTransactions = ZERO_BI;
+    token0.derivedKLAY = ZERO_BD;
+    token0.derivedUSD = ZERO_BD;
     token0.save();
   
     // Factory
@@ -54,8 +58,12 @@ export function handlePairCreated(event: PairCreated): void {
     token1.totalSupply = fetchTokenTotalSupply(event.params.token1);
     token1.decimals = fetchTokenDecimals(event.params.token1);
     token1.tradeVolume = ZERO_BD;
+    token1.tradeVolumeUSD = ZERO_BD;
+    token1.untrackedVolumeUSD = ZERO_BD;
     token1.totalLiquidity = ZERO_BD;
     token1.totalTransactions = ZERO_BI;
+    token1.derivedKLAY = ZERO_BD;
+    token1.derivedUSD = ZERO_BD;
     token1.save();
 
     // Factory
@@ -72,10 +80,14 @@ export function handlePairCreated(event: PairCreated): void {
   pair.reserve0 = ZERO_BD;
   pair.reserve1 = ZERO_BD;
   pair.totalSupply = ZERO_BD;
+  pair.reserveKLAY = ZERO_BD;
+  pair.reserveUSD = ZERO_BD;
   pair.token0Price = ZERO_BD;
   pair.token1Price = ZERO_BD;
   pair.volumeToken0 = ZERO_BD;
   pair.volumeToken1 = ZERO_BD;
+  pair.volumeUSD = ZERO_BD;
+  pair.untrackedVolumeUSD = ZERO_BD;
   pair.totalTransactions = ZERO_BI;
   pair.liquidityProviderCount = ZERO_BI;
   pair.save();
