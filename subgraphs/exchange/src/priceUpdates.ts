@@ -1,5 +1,5 @@
 import { BigDecimal, Address, Bytes } from "@graphprotocol/graph-ts/index";
-import { KlayOracle } from "../generated/Factory/KlayOracle";
+import { KlayOracle } from "../generated/templates/Pair/KlayOracle";
 import { Pair, Token, Bundle } from "../generated/schema";
 import { log } from '@graphprotocol/graph-ts';
 import { ONE_BD, ZERO_BD, KlayOracleAddress, factoryContract, ADDRESS_ZERO, USDT_PRECISION } from "./utils";
