@@ -260,6 +260,10 @@ export function handleSync(event: Sync): void {
     .plus(pair.reserve1.times(token1.derivedKLAY as BigDecimal));
   pair.reserveUSD = pair.reserveKLAY.times(bundle.klayPrice);
 
+  // use tracked amounts globally
+  factory.totalLiquidityKLAY = factory.totalLiquidityKLAY.plus(trackedLiquidityKLAY);
+  factory.totalLiquidityUSD = factory.totalLiquidityKLAY.times(bundle.klayPrice);
+
   // now correctly set liquidity amounts for each token
   token0.totalLiquidity = token0.totalLiquidity.plus(pair.reserve0);
   token1.totalLiquidity = token1.totalLiquidity.plus(pair.reserve1);
