@@ -13,8 +13,15 @@ export function updateFactoryDayData(event: ethereum.Event): FactoryDayData {
   if (factoryDayData === null) {
     factoryDayData = new FactoryDayData(dayID.toString());
     factoryDayData.timestamp = dayStartTimestamp;
+    factoryDayData.dailyVolumeUSD = ZERO_BD;
+    factoryDayData.dailyVolumeKLAY = ZERO_BD;
+    factoryDayData.totalVolumeUSD = ZERO_BD;
+    factoryDayData.totalVolumeKLAY = ZERO_BD;
+    factoryDayData.dailyVolumeUntracked = ZERO_BD;
   }
 
+  factoryDayData.totalLiquidityUSD = factory.totalLiquidityUSD
+  factoryDayData.totalLiquidityKLAY = factory.totalLiquidityKLAY
   factoryDayData.totalTransactions = factory.totalTransactions;
   factoryDayData.save();
 
@@ -91,6 +98,8 @@ export function updateTokenDayData(token: Token, event: ethereum.Event): TokenDa
     tokenDayData.token = token.id;
     tokenDayData.priceUSD = token.derivedKLAY.times(bundle.klayPrice)
     tokenDayData.dailyVolumeToken = ZERO_BD;
+    tokenDayData.dailyVolumeKLAY = ZERO_BD;
+    tokenDayData.dailyVolumeUSD = ZERO_BD;
     tokenDayData.totalTransactions = ZERO_BI;
     tokenDayData.totalLiquidityUSD = ZERO_BD;
   }

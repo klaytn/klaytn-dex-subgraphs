@@ -22,6 +22,11 @@ export function handlePairCreated(event: PairCreated): void {
     factory.totalPairs = ZERO_BI;
     factory.totalTokens = ZERO_BI;
     factory.totalTransactions = ZERO_BI;
+    factory.totalVolumeKLAY = ZERO_BD;
+    factory.totalLiquidityKLAY = ZERO_BD;
+    factory.totalVolumeUSD = ZERO_BD;
+    factory.untrackedVolumeUSD = ZERO_BD;
+    factory.totalLiquidityUSD = ZERO_BD;
 
     let bundle = new Bundle(KlayOracleAddress);
     bundle.klayPrice = ZERO_BD;
@@ -79,6 +84,7 @@ export function handlePairCreated(event: PairCreated): void {
   pair.token1 = token1.id;
   pair.reserve0 = ZERO_BD;
   pair.reserve1 = ZERO_BD;
+  pair.trackedReserveKLAY = ZERO_BD;
   pair.totalSupply = ZERO_BD;
   pair.reserveKLAY = ZERO_BD;
   pair.reserveUSD = ZERO_BD;
