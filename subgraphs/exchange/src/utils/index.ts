@@ -3,7 +3,7 @@ import { BigInt, BigDecimal, Address, log, ethereum, Bytes } from "@graphprotoco
 import { KIP7 } from "../../generated/Factory/KIP7";
 import { KIP7NameBytes } from "../../generated/Factory/KIP7NameBytes";
 import { KIP7SymbolBytes } from "../../generated/Factory/KIP7SymbolBytes";
-import { User, LiquidityPosition, LiquidityPositionSnapshot, Pair } from '../../generated/schema';
+import { User, Bundle, LiquidityPosition, LiquidityPositionSnapshot, Pair, Token } from '../../generated/schema';
 import { Factory as FactoryContract } from "../../generated/templates/Pair/Factory";
 
 export let ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
@@ -104,11 +104,11 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt {
 }
 
 export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
-  let contract = KIP7.bind(tokenAddress)
+  let contract = KIP7.bind(tokenAddress);
 
-  let totalSupplyResult = contract.try_totalSupply()
+  let totalSupplyResult = contract.try_totalSupply();
   if (!totalSupplyResult.reverted) {
-    return totalSupplyResult.value
+    return totalSupplyResult.value;
   }
   return ZERO_BI;
 }
@@ -142,21 +142,27 @@ export function createUser(address: Address): void {
 }
 
 export function createLiquiditySnapshot(position: LiquidityPosition, event: ethereum.Event): void {
-  let timestamp = event.block.timestamp.toI32()
-  let pair = Pair.load(position.pair)!
+  let timestamp = event.block.timestamp.toI32();
+  let bundle = Bundle.load(KlayOracleAddress)!;
+  let pair = Pair.load(position.pair)!;
+  let token0 = Token.load(pair.token0)!;
+  let token1 = Token.load(pair.token1)!;
 
   // create new snapshot
-  let snapshot = new LiquidityPositionSnapshot(position.id.concat(timestamp.toString()))
-  snapshot.liquidityPosition = position.id
-  snapshot.timestamp = timestamp
-  snapshot.block = event.block.number.toI32()
-  snapshot.user = position.user
-  snapshot.pair = position.pair
-  snapshot.reserve0 = pair.reserve0
-  snapshot.reserve1 = pair.reserve1
-  snapshot.liquidityTokenTotalSupply = pair.totalSupply
-  snapshot.liquidityTokenBalance = position.liquidityTokenBalance
-  snapshot.liquidityPosition = position.id
-  snapshot.save()
-  position.save()
+  let snapshot = new LiquidityPositionSnapshot(position.id.concat(timestamp.toString()));
+  snapshot.liquidityPosition = position.id;
+  snapshot.timestamp = timestamp;
+  snapshot.block = event.block.number.toI32();
+  snapshot.user = position.user;
+  snapshot.pair = position.pair;
+  snapshot.token0PriceUSD = token0.derivedKLAY.times(bundle.klayPrice);
+  snapshot.token1PriceUSD = token1.derivedKLAY.times(bundle.klayPrice);
+  snapshot.reserve0 = pair.reserve0;
+  snapshot.reserve1 = pair.reserve1;
+  snapshot.reserveUSD = pair.reserveUSD;
+  snapshot.liquidityTokenTotalSupply = pair.totalSupply;
+  snapshot.liquidityTokenBalance = position.liquidityTokenBalance;
+  snapshot.liquidityPosition = position.id;
+  snapshot.save();
+  position.save();
 }

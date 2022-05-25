@@ -7,6 +7,14 @@ type Factory @entity {
   totalTokens: BigInt!
   "Total of transactions"
   totalTransactions: BigInt!
+  # total volume
+  totalVolumeUSD: BigDecimal!
+  totalVolumeKLAY: BigDecimal!
+  # untracked values - less confident USD scores
+  untrackedVolumeUSD: BigDecimal!
+  # total liquidity
+  totalLiquidityUSD: BigDecimal!
+  totalLiquidityKLAY: BigDecimal!
 }
 
 type Token @entity {
@@ -54,6 +62,8 @@ type Pair @entity {
   # derived liquidity
   reserveKLAY: BigDecimal!
   reserveUSD: BigDecimal!
+  # used for separating per pair reserves and global
+  trackedReserveKLAY: BigDecimal!
   # Price in terms of the asset pair
   token0Price: BigDecimal!
   token1Price: BigDecimal!
@@ -106,8 +116,11 @@ type LiquidityPositionSnapshot @entity {
   block: Int! # saved for fast historical lookups
   user: User! # reference to user
   pair: Pair! # reference to pair
+  token0PriceUSD: BigDecimal! # snapshot of token0 price
+  token1PriceUSD: BigDecimal! # snapshot of token1 price
   reserve0: BigDecimal! # snapshot of pair token0 reserves
   reserve1: BigDecimal! # snapshot of pair token1 reserves
+  reserveUSD: BigDecimal! # snapshot of pair reserves in USD
   liquidityTokenTotalSupply: BigDecimal! # snapshot of pool token supply
   liquidityTokenBalance: BigDecimal! # snapshot of users pool token balance
 }
@@ -178,6 +191,16 @@ type Swap @entity {
 type FactoryDayData @entity {
   id: ID! # timestamp rounded to current day by dividing by 86400
   timestamp: Int!
+
+  dailyVolumeKLAY: BigDecimal!
+  dailyVolumeUSD: BigDecimal!
+  dailyVolumeUntracked: BigDecimal!
+
+  totalVolumeKLAY: BigDecimal!
+  totalLiquidityKLAY: BigDecimal!
+  totalVolumeUSD: BigDecimal! # Accumulate at each trade, not just calculated off whatever totalVolume is. making it more accurate as it is a live conversion
+  totalLiquidityUSD: BigDecimal!
+
   totalTransactions: BigInt!
 }
 
@@ -223,6 +246,8 @@ type TokenDayData @entity {
   token: Token!
   # volume stats
   dailyVolumeToken: BigDecimal!
+  dailyVolumeKLAY: BigDecimal!
+  dailyVolumeUSD: BigDecimal!
   totalTransactions: BigInt!
   # liquidity stats
   totalLiquidityToken: BigDecimal!

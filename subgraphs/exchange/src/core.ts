@@ -12,7 +12,7 @@ import {
 } from "../generated/schema";
 import { Pair as PairContract, Mint, Burn, Swap, Transfer, Sync } from "../generated/templates/Pair/Pair";
 import { updatePairDayData, updateTokenDayData, updateFactoryDayData, updatePairHourData } from "./dayUpdates";
-import { getKlayPriceInUSD, getTrackedVolumeUSD, findKlayPerToken } from "./priceUpdates";
+import { getKlayPriceInUSD, getTrackedVolumeUSD, getTrackedLiquidityUSD, findKlayPerToken } from "./priceUpdates";
 import {
   ADDRESS_ZERO,
   FACTORY_ADDRESS,
@@ -216,6 +216,8 @@ export function handleSync(event: Sync): void {
   let token1 = Token.load(pair.token1)!;
   let factory = Factory.load(FACTORY_ADDRESS)!;
   
+  // reset factory liquidity by subtracting onluy tarcked liquidity
+  factory.totalLiquidityKLAY = factory.totalLiquidityKLAY.minus(pair.trackedReserveKLAY as BigDecimal);
 
   // reset token total liquidity amounts
   token0.totalLiquidity = token0.totalLiquidity.minus(pair.reserve0);
@@ -241,7 +243,18 @@ export function handleSync(event: Sync): void {
   token1.derivedUSD = token1.derivedKLAY.times(bundle.klayPrice);
   token1.save();
 
+  // get tracked liquidity - will be 0 if neither is in whitelist
+  let trackedLiquidityKLAY: BigDecimal;
+  if (bundle.klayPrice.notEqual(ZERO_BD)) {
+    trackedLiquidityKLAY = getTrackedLiquidityUSD(pair.reserve0, token0 as Token, pair.reserve1, token1 as Token).div(
+      bundle.klayPrice
+    )
+  } else {
+    trackedLiquidityKLAY = ZERO_BD;
+  }
+
   // use derived amounts within pair
+  pair.trackedReserveKLAY = trackedLiquidityKLAY;
   pair.reserveKLAY = pair.reserve0
     .times(token0.derivedKLAY as BigDecimal)
     .plus(pair.reserve1.times(token1.derivedKLAY as BigDecimal));
@@ -429,6 +442,9 @@ export function handleSwap(event: Swap): void {
 
   // update global values, only used tracked amounts for volume
   let factory = Factory.load(FACTORY_ADDRESS) as Factory;
+  factory.totalVolumeUSD = factory.totalVolumeUSD.plus(trackedAmountUSD)
+  factory.totalVolumeKLAY = factory.totalVolumeKLAY.plus(trackedAmountKLAY)
+  factory.untrackedVolumeUSD = factory.untrackedVolumeUSD.plus(derivedAmountUSD)
   factory.totalTransactions = factory.totalTransactions.plus(ONE_BI);
 
   // save entities
@@ -482,8 +498,15 @@ export function handleSwap(event: Swap): void {
   // update day entities
   let pairDayData = updatePairDayData(event);
   let pairHourData = updatePairHourData(event);
+  let factoryDayData = updateFactoryDayData(event);
   let token0DayData = updateTokenDayData(token0 as Token, event);
   let token1DayData = updateTokenDayData(token1 as Token, event);
+  
+  // swap specific updating
+  factoryDayData.dailyVolumeUSD = factoryDayData.dailyVolumeUSD.plus(trackedAmountUSD)
+  factoryDayData.dailyVolumeKLAY = factoryDayData.dailyVolumeKLAY.plus(trackedAmountKLAY)
+  factoryDayData.dailyVolumeUntracked = factoryDayData.dailyVolumeUntracked.plus(derivedAmountUSD)
+  factoryDayData.save()
 
   // swap specific updating for pair
   pairDayData.volumeToken0 = pairDayData.volumeToken0.plus(amount0Total);
@@ -499,9 +522,15 @@ export function handleSwap(event: Swap): void {
 
   // swap specific updating for token0
   token0DayData.dailyVolumeToken = token0DayData.dailyVolumeToken.plus(amount0Total);
+  token0DayData.dailyVolumeKLAY = token0DayData.dailyVolumeKLAY.plus(amount0Total.times(token0.derivedKLAY as BigDecimal));
+  token0DayData.dailyVolumeUSD = token0DayData.dailyVolumeUSD.plus(
+    amount0Total.times(token0.derivedKLAY as BigDecimal).times(bundle.klayPrice));
   token0DayData.save();
 
   // swap specific updating
   token1DayData.dailyVolumeToken = token1DayData.dailyVolumeToken.plus(amount1Total);
+  token1DayData.dailyVolumeKLAY = token1DayData.dailyVolumeKLAY.plus(amount1Total.times(token1.derivedKLAY as BigDecimal));
+  token1DayData.dailyVolumeUSD = token1DayData.dailyVolumeUSD.plus(
+    amount1Total.times(token1.derivedKLAY as BigDecimal).times(bundle.klayPrice));
   token1DayData.save();
 }
