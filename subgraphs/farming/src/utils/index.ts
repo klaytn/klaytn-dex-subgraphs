@@ -5,3 +5,4 @@ export const BI_ONE = BigInt.fromI32(1);
 
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
 export const ACC_PRECISION = BigInt.fromString("1000000000000");
+export const FARMING_ADDRESS = "0xEB487a3A623E25cAa668B6D199F1aBa9D2380456";

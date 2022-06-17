@@ -13,19 +13,20 @@ export function getOrCreatePool(pid: BigInt, block: ethereum.Block): Pool {
     pool.farming = farming.id;
     pool.pair = ADDRESS_ZERO;
     pool.allocPoint = BI_ZERO;
-    pool.lastRewardBlock = BI_ZERO;
+    pool.lastRewardBlock = (block.number).gt(farming.startBlock) ? block.number : farming.startBlock;
     pool.accPtnPerShare = BI_ZERO;
     pool.totalTokensStaked = BI_ZERO;
     pool.bonusMultiplier = BI_ZERO;
     pool.bonusEndBlock = BI_ZERO;
     pool.userCount = BI_ZERO;
     pool.totalUsersCount = BI_ZERO;
+    pool.harvested = BI_ZERO;
+    pool.createdAtBlock = block.number;
   }
 
-  pool.timestamp = block.timestamp;
-  pool.block = block.number;
-  pool.lastRewardBlock = block.number;
+  pool.updatedAtBlock = block.number;
+  pool.updatedAtTimestamp = block.timestamp;
   pool.save();
 
-  return pool as Pool;
+  return pool;
 }

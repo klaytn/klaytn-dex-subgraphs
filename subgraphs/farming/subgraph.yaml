@@ -8,9 +8,9 @@ dataSources:
     name: Farming
     network: baobab
     source:
-      address: "0xEB487a3A623E25cAa668B6D199F1aBa9D2380450"
+      address: "0x32bE07FB9dBf294c2e92715F562f7aBA02b7443A"
       abi: Farming
-      startBlock: 1
+      startBlock: 93737349
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

@@ -3,12 +3,12 @@ type Farming @entity {
   id: ID!
   totalAllocPoint: BigInt!
   rewardRate: BigInt!
+  startBlock: BigInt!
 
   pools: [Pool!] @derivedFrom(field: "farming")
   poolCount: BigInt!
-
-  timestamp: BigInt!
-  block: BigInt!
+  updatedAtTimestamp: BigInt!
+  updatedAtBlock: BigInt!
 }
 
 type Pool @entity {
@@ -23,14 +23,15 @@ type Pool @entity {
   totalTokensStaked: BigInt!
   bonusMultiplier: BigInt!
   bonusEndBlock: BigInt!
-
+  harvested: BigInt!
   users: [User!]! @derivedFrom(field: "pool")
   # total user include deposit and withdraw all
   totalUsersCount: BigInt!
   userCount: BigInt!
-
-  timestamp: BigInt!
-  block: BigInt!
+  
+  createdAtBlock: BigInt!
+  updatedAtTimestamp: BigInt!
+  updatedAtBlock: BigInt!
 }
 
 type User @entity {
@@ -42,7 +43,7 @@ type User @entity {
 
   amount: BigInt!
   rewardDebt: BigInt!
-
-  timestamp: BigInt!
-  block: BigInt!
+  harvested: BigInt!
+  updatedAtTimestamp: BigInt!
+  updatedAtBlock: BigInt!
 }

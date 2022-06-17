@@ -1,8 +1,8 @@
 {
   "baobab": {
     "Farming": {
-      "address": "",
-      "startBlock": ""
+      "address": "0x32bE07FB9dBf294c2e92715F562f7aBA02b7443A",
+      "startBlock": 93737349
     }
   }
 }
