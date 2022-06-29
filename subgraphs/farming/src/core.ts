@@ -76,12 +76,11 @@ export function handleDeposit(event: Deposit): void {
         event.params.amount.toString(),
     ]);
 
-    const farming = getOrCreateFarming(event.block);
     const pool = getOrCreatePool(event.params.pid, event.block);
     const user = getOrCreateUser(event.params.user, pool, event.block);
 
     pool.totalTokensStaked = pool.totalTokensStaked.plus(event.params.amount);
-    if (event.block.number.gt(farming.startBlock) && user.amount.gt(BI_ZERO)) {
+    if (event.block.number.gt(pool.lastRewardBlock) && user.amount.gt(BI_ZERO)) {
         const pending = user.amount
           .times(pool.accPtnPerShare)
           .div(ACC_PRECISION)
@@ -111,13 +110,12 @@ export function handleWithdraw(event: Withdraw): void {
         event.params.amount.toString(),
     ]);
 
-    const farming = getOrCreateFarming(event.block);
     const pool = getOrCreatePool(event.params.pid, event.block);
     const user = getOrCreateUser(event.params.user, pool, event.block);
 
 
     pool.totalTokensStaked = pool.totalTokensStaked.minus(event.params.amount);
-    if (event.block.number.gt(farming.startBlock) && user.amount.gt(BI_ZERO)) {
+    if (event.block.number.gt(pool.lastRewardBlock) && user.amount.gt(BI_ZERO)) {
         const pending = user.amount
           .times(pool.accPtnPerShare)
           .div(ACC_PRECISION)
