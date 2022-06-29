@@ -60,3 +60,9 @@ templates:
           handler: handleNewStartAndEndBlocks
         - event: NewRewardPerBlock(uint256)
           handler: handleNewRewardPerBlock
+        - event: UpdatePool(uint256,uint256,uint256)
+          handler: handleUpdatePool
+        - event: NewPoolLimit(uint256)
+          handler: handleNewPoolLimit
+        - event: RewardsStop(uint256)
+          handler: handleRewardsStop

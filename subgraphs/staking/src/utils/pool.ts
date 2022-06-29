@@ -1,12 +1,12 @@
 /* eslint-disable prefer-const */
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { StakingPool as StakingPoolContract } from "../../generated/templates/StakingPool/StakingPool";
-import { Pool } from "../../generated/schema";
+import { ZERO_BI } from "./index";
 
 export let ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 
-export function fetchStakeToken(smartChefAddress: Address): Address {
-  let contract = StakingPoolContract.bind(smartChefAddress);
+export function fetchStakeToken(poolAddress: Address): Address {
+  let contract = StakingPoolContract.bind(poolAddress);
   let nameValue = Address.fromString(ADDRESS_ZERO);
   let nameResult = contract.try_pool();
   if (!nameResult.reverted) {
@@ -16,8 +16,8 @@ export function fetchStakeToken(smartChefAddress: Address): Address {
   return nameValue;
 }
 
-export function fetchRewardToken(smartChefAddress: Address): Address {
-  let contract = StakingPoolContract.bind(smartChefAddress);
+export function fetchRewardToken(poolAddress: Address): Address {
+  let contract = StakingPoolContract.bind(poolAddress);
   let nameValue = Address.fromString(ADDRESS_ZERO);
   let nameResult = contract.try_pool();
   if (!nameResult.reverted) {
@@ -27,9 +27,9 @@ export function fetchRewardToken(smartChefAddress: Address): Address {
   return nameValue;
 }
 
-export function fetchStartBlock(smartChefAddress: Address): BigInt {
-  let contract = StakingPoolContract.bind(smartChefAddress);
-  let decimalValue = BigInt.fromI32(0);
+export function fetchStartBlock(poolAddress: Address): BigInt {
+  let contract = StakingPoolContract.bind(poolAddress);
+  let decimalValue = ZERO_BI;
   let decimalResult = contract.try_pool();
   if (!decimalResult.reverted) {
     decimalValue = decimalResult.value.value4;
@@ -37,9 +37,9 @@ export function fetchStartBlock(smartChefAddress: Address): BigInt {
   return decimalValue;
 }
 
-export function fetchEndBlock(smartChefAddress: Address): BigInt {
-  let contract = StakingPoolContract.bind(smartChefAddress);
-  let decimalValue = BigInt.fromI32(0);
+export function fetchEndBlock(poolAddress: Address): BigInt {
+  let contract = StakingPoolContract.bind(poolAddress);
+  let decimalValue = ZERO_BI;
   let decimalResult = contract.try_pool();
   if (!decimalResult.reverted) {
     decimalValue = decimalResult.value.value5;
@@ -47,9 +47,9 @@ export function fetchEndBlock(smartChefAddress: Address): BigInt {
   return decimalValue;
 }
 
-export function fetchRewardPerBlock(smartChefAddress: Address): BigInt {
-  let contract = StakingPoolContract.bind(smartChefAddress);
-  let decimalValue = BigInt.fromI32(0);
+export function fetchRewardPerBlock(poolAddress: Address): BigInt {
+  let contract = StakingPoolContract.bind(poolAddress);
+  let decimalValue = ZERO_BI;
   let decimalResult = contract.try_pool();
   if (!decimalResult.reverted) {
     decimalValue = decimalResult.value.value10;
@@ -57,12 +57,32 @@ export function fetchRewardPerBlock(smartChefAddress: Address): BigInt {
   return decimalValue;
 }
 
-export function fetchUserLimit(smartChefAddress: Address): BigInt {
-  let contract = StakingPoolContract.bind(smartChefAddress);
-  let decimalValue = BigInt.fromI32(0);
+export function fetchUserLimit(poolAddress: Address): BigInt {
+  let contract = StakingPoolContract.bind(poolAddress);
+  let decimalValue = ZERO_BI;
   let decimalResult = contract.try_pool();
   if (!decimalResult.reverted) {
     decimalValue = decimalResult.value.value8;
+  }
+  return decimalValue;
+}
+
+export function fetchNumberBlocksForUserLimit(poolAddress: Address): BigInt {
+  let contract = StakingPoolContract.bind(poolAddress);
+  let decimalValue = ZERO_BI;
+  let decimalResult = contract.try_pool();
+  if (!decimalResult.reverted) {
+    decimalValue = decimalResult.value.value7;
+  }
+  return decimalValue;
+}
+
+export function fetchPrecisionFactor(poolAddress: Address): BigInt {
+  let contract = StakingPoolContract.bind(poolAddress);
+  let decimalValue = ZERO_BI;
+  let decimalResult = contract.try_PRECISION_FACTOR();
+  if (!decimalResult.reverted) {
+    decimalValue = decimalResult.value;
   }
   return decimalValue;
 }

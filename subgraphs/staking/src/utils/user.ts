@@ -1,5 +1,6 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address } from "@graphprotocol/graph-ts";
 import { User } from "../../generated/schema";
+import { ZERO_BI } from "./index"
 
 export function getOrCreateUser(poolAddress: Address, address: Address): User {
   const id = poolAddress.toHex() + "-" + address.toHex();
@@ -8,9 +9,11 @@ export function getOrCreateUser(poolAddress: Address, address: Address): User {
 
   if (user === null) {
     user = new User(id);
-    user.stakeAmount = BigInt.fromI32(0);
-    user.pool = poolAddress.toHex();
     user.address = address;
+    user.pool = poolAddress.toHex();
+    user.amount = ZERO_BI;
+    user.harvested = ZERO_BI;
+    user.rewardDebt = ZERO_BI;
     user.save();
   }
 

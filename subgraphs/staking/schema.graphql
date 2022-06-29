@@ -13,23 +13,30 @@ type Pool @entity {
   "Token"
   stakeToken: Token!
   "Token"
-  earnToken: Token!
+  rewardToken: Token!
 
   "Start block number"
   startBlock: BigInt!
   "End block number"
   endBlock: BigInt!
 
+  lastRewardBlock: BigInt!
+  accTokenPerShare: BigInt!
+  totalTokensStaked: BigInt!
+  harvested: BigInt!
+
   "Reward per block (in earnToken)"
-  reward: BigDecimal!
+  rewardRate: BigDecimal!
+  precisionFactor: BigInt!
 
   "Limit (if any, in stakeToken)"
-  limit: BigDecimal
+  userLimit: BigDecimal!
+  blocksForUserLimit: BigInt
 
   "Block number"
-  block: BigInt!
+  createdAtBlock: BigInt!
   "Block timestamp"
-  timestamp: BigInt!
+  createdAtTimestamp: BigInt!
 
   users: [User!]! @derivedFrom(field: "pool")
 }
@@ -52,7 +59,10 @@ type User @entity {
   address: Bytes!
 
   pool: Pool!
-
-  stakeAmount: BigInt!
   stakeToken: Token
+
+  amount: BigInt!
+  harvested: BigInt!
+  rewardDebt: BigInt!
+  
 }
