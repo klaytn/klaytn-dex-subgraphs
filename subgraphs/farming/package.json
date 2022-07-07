@@ -5,7 +5,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ klaytn-subgraph/pairs",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ klaytn-subgraph/farming",
     "create-local": "graph create --node http://localhost:8020/ klaytn-subgraph/farming",
     "remove-local": "graph remove --node http://localhost:8020/ klaytn-subgraph/farming",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 klaytn-subgraph/farming",
