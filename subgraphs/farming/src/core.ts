@@ -80,12 +80,12 @@ export function handleDeposit(event: Deposit): void {
     const user = getOrCreateUser(event.params.user, pool, event.block);
 
     pool.totalTokensStaked = pool.totalTokensStaked.plus(event.params.amount);
-    if (event.block.number.gt(pool.lastRewardBlock) && user.amount.gt(BI_ZERO)) {
+    if (event.block.number.gt(pool.createdAtBlock) && user.amount.gt(BI_ZERO)) {
         const pending = user.amount
           .times(pool.accPtnPerShare)
           .div(ACC_PRECISION)
           .minus(user.rewardDebt)
-        log.info('Withdraw: User amount is more than zero, we should harvest {} ptn - block: {}', [
+        log.info('Deposit: User amount is more than zero, we should harvest {} ptn - block: {}', [
           pending.toString(),
           event.block.number.toString(),
         ])
@@ -115,7 +115,7 @@ export function handleWithdraw(event: Withdraw): void {
 
 
     pool.totalTokensStaked = pool.totalTokensStaked.minus(event.params.amount);
-    if (event.block.number.gt(pool.lastRewardBlock) && user.amount.gt(BI_ZERO)) {
+    if (event.block.number.gt(pool.createdAtBlock) && user.amount.gt(BI_ZERO)) {
         const pending = user.amount
           .times(pool.accPtnPerShare)
           .div(ACC_PRECISION)
