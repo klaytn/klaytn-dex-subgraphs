@@ -19,7 +19,7 @@ export function handleDeposit(event: Deposit): void {
   let pool = Pool.load(event.address.toHex())!;
   user.stakeToken = pool.stakeToken;
   pool.totalTokensStaked = pool.totalTokensStaked.plus(event.params.amount);
-  if (event.block.number.gt(pool.lastRewardBlock) && user.amount.gt(ZERO_BI)) {
+  if (event.block.number.gt(pool.startBlock) && user.amount.gt(ZERO_BI)) {
     const pending = user.amount
       .times(pool.accTokenPerShare)
       .div(pool.precisionFactor)
@@ -43,7 +43,7 @@ export function handleWithdraw(event: Withdraw): void {
   let pool = Pool.load(event.address.toHex())!;
   pool.totalTokensStaked = pool.totalTokensStaked.minus(event.params.amount);
 
-  if (event.block.number.gt(pool.lastRewardBlock) && user.amount.gt(ZERO_BI)) {
+  if (event.block.number.gt(pool.startBlock) && user.amount.gt(ZERO_BI)) {
     const pending = user.amount
       .times(pool.accTokenPerShare)
       .div(pool.precisionFactor)
