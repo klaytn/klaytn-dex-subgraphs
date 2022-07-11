@@ -2,7 +2,7 @@
 import { log } from "@graphprotocol/graph-ts";
 import { Factory, Pool } from "../generated/schema";
 import { NewStakingContract } from "../generated/StakingFactory/StakingFactory";
-import { convertTokenToDecimal, ZERO_BI, ONE_BI, FACTORY_ADDRESS } from "./utils";
+import { convertTokenToDecimal, ZERO_BI, ONE_BI, ZERO_BD, FACTORY_ADDRESS } from "./utils";
 import { StakingPool as StakingPoolTemplate } from "../generated/templates";
 import { getOrCreateToken } from "./utils/kip7";
 import {
@@ -54,6 +54,10 @@ function process(event: NewStakingContract): void {
   if (userLimit.gt(ZERO_BI)) {
     pool.userLimit = convertTokenToDecimal(userLimit, stakeToken.decimals);
     pool.blocksForUserLimit = fetchNumberBlocksForUserLimit(event.params.staking);
+  }
+  else {
+    pool.userLimit = ZERO_BD;
+    pool.blocksForUserLimit = ZERO_BI;
   }
 
   pool.createdAtBlock = event.block.number;
