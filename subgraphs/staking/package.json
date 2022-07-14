@@ -1,0 +1,16 @@
+{
+  "name": "staking",
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ klaytn-subgraph/staking",
+    "create-local": "graph create --node http://localhost:8020/ klaytn-subgraph/staking",
+    "remove-local": "graph remove --node http://localhost:8020/ klaytn-subgraph/staking",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 klaytn-subgraph/staking",
+    "create-remote": "graph create --node http://ipfs1.dev.infra.soramitsu.co.jp:8020 klaytn-subgraph/staking",
+    "remove-remote": "graph remove --node http://ipfs1.dev.infra.soramitsu.co.jp:8020 klaytn-subgraph/staking",
+    "deploy-remote": "graph deploy --node http://ipfs1.dev.infra.soramitsu.co.jp:8020 klaytn-subgraph/staking"
+  }
+}
