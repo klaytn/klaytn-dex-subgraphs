@@ -1,6 +1,6 @@
-# Repo template
+# Klaytn-DEX Project
 
-Template repository to help setup new projects in ground-x.
+Open-Source DEX based on Klaytn. This project is about subgraphs for running the Graph node.
 
 ## Checklist
 

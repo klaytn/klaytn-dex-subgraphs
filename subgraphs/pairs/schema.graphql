@@ -1,0 +1,41 @@
+"""
+Klaytn DEX Factory
+"""
+type Factory @entity {
+  "ID (address)"
+  id: ID!
+  "Total of Pairs"
+  totalPairs: BigInt!
+  "Total of Tokens"
+  totalTokens: BigInt!
+}
+
+"""
+Klaytn DEX Tokens
+"""
+type Token @entity {
+  "ID (address)"
+  id: ID!
+  "Name"
+  name: String!
+  "Symbol"
+  symbol: String!
+  "Decimals"
+  decimals: BigInt
+}
+
+"""
+Klaytn DEX Pairs (KlayLP)
+"""
+type Pair @entity {
+  "ID (address)"
+  id: ID!
+  "Token0 Symbol - Token1 Symbol"
+  name: String!
+  # creation stats
+  block: BigInt!
+  timestamp: BigInt!
+  # mirrored from the smart contract
+  token0: Token!
+  token1: Token!
+}
