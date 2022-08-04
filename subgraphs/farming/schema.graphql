@@ -1,0 +1,49 @@
+type Farming @entity {
+  # Contract address
+  id: ID!
+  totalAllocPoint: BigInt!
+  rewardRate: BigInt!
+  startBlock: BigInt!
+
+  pools: [Pool!] @derivedFrom(field: "farming")
+  poolCount: BigInt!
+  updatedAtTimestamp: BigInt!
+  updatedAtBlock: BigInt!
+}
+
+type Pool @entity {
+  # Index of pool in poolInfo on MasterChef contract
+  id: ID!
+  farming: Farming!
+  pair: Bytes!
+
+  allocPoint: BigInt!
+  lastRewardBlock: BigInt!
+  accPtnPerShare: BigInt!
+  totalTokensStaked: BigInt!
+  bonusMultiplier: BigInt!
+  bonusEndBlock: BigInt!
+  harvested: BigInt!
+  users: [User!]! @derivedFrom(field: "pool")
+  # total user include deposit and withdraw all
+  totalUsersCount: BigInt!
+  userCount: BigInt!
+  
+  createdAtBlock: BigInt!
+  updatedAtTimestamp: BigInt!
+  updatedAtBlock: BigInt!
+}
+
+type User @entity {
+  # Pool id concatenated with user address
+  id: ID!
+
+  address: Bytes!
+  pool: Pool!
+
+  amount: BigInt!
+  rewardDebt: BigInt!
+  harvested: BigInt!
+  updatedAtTimestamp: BigInt!
+  updatedAtBlock: BigInt!
+}
