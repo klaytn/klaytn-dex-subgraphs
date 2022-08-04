@@ -1,0 +1,68 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: StakingFactory
+    network: baobab
+    source:
+      address: "0xeB81FCD447957d2AE1fBE7676A4684442b9aE941"
+      abi: StakingFactory
+      startBlock: 95008685
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/factory.ts
+      entities:
+        - Factory
+        - Pool
+        - Token
+      abis:
+        - name: StakingFactory
+          file: ./abis/StakingFactory.json
+        - name: StakingPool
+          file: ./abis/StakingInitializable.json
+        - name: KIP7
+          file: ./abis/KIP7.json
+        - name: KIP7NameBytes
+          file: ./abis/KIP7NameBytes.json
+        - name: KIP7SymbolBytes
+          file: ./abis/KIP7SymbolBytes.json
+      eventHandlers:
+        - event: NewStakingContract(indexed address)
+          handler: handleNewStakingContract
+templates:
+  - name: StakingPool
+    kind: ethereum/contract
+    network: baobab
+    source:
+      abi: StakingPool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/index.ts
+      entities:
+        - Pool
+        - User
+      abis:
+        - name: StakingPool
+          file: ./abis/StakingInitializable.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256)
+          handler: handleDeposit
+        - event: EmergencyWithdraw(indexed address,uint256)
+          handler: handleEmergencyWithdraw
+        - event: Withdraw(indexed address,uint256)
+          handler: handleWithdraw
+        - event: NewStartAndEndBlocks(uint256,uint256)
+          handler: handleNewStartAndEndBlocks
+        - event: NewRewardPerBlock(uint256)
+          handler: handleNewRewardPerBlock
+        - event: UpdatePool(uint256,uint256,uint256)
+          handler: handleUpdatePool
+        - event: NewPoolLimit(uint256)
+          handler: handleNewPoolLimit
+        - event: RewardsStop(uint256)
+          handler: handleRewardsStop
