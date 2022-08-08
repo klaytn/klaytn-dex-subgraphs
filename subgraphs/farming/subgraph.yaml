@@ -1,0 +1,42 @@
+specVersion: 0.0.3
+description: Track farming pools and releted info in Klaytn Dex
+repository: https://github.com/klaytn-dex-subgraphs
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Farming
+    network: baobab
+    source:
+      address: "0x32bE07FB9dBf294c2e92715F562f7aBA02b7443A"
+      abi: Farming
+      startBlock: 93737349
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/core.ts
+      entities:
+        - Farming
+        - Pool
+        - User
+      abis:
+        - name: Farming
+          file: ./abis/Farming.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,indexed uint256,uint256)
+          handler: handleWithdraw
+        - event: EmergencyWithdraw(indexed address,indexed uint256,uint256)
+          handler: handleEmergencyWithdraw
+        - event: AddPool(indexed uint256,uint256,indexed address,uint256,uint256)
+          handler: handleAddPool
+        - event: SetPool(indexed uint256,uint256)
+          handler: handleSetPool
+        - event: UpdatePool(indexed uint256,uint256,uint256,uint256)
+          handler: handleUpdatePool
+        - event: UpdateRewardPerBlock(uint256)
+          handler: handleUpdateRewardPerBlock
+        - event: UpdatePoolMultiplier(indexed uint256,uint256)
+          handler: handleUpdatePoolMultiplier
