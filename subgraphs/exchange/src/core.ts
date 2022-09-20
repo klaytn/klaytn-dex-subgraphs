@@ -10,7 +10,7 @@ import {
   Swap as SwapEvent,
   Bundle
 } from "../generated/schema";
-import { Pair as PairContract, Mint, Burn, Swap, Transfer, Sync } from "../generated/templates/Pair/Pair";
+import { DexPair as PairContract, Mint, Burn, Swap, Transfer, Sync } from "../generated/templates/DexPair/DexPair";
 import { updatePairDayData, updateTokenDayData, updateFactoryDayData, updatePairHourData } from "./dayUpdates";
 import { getKlayPriceInUSD, getTrackedVolumeUSD, getTrackedLiquidityUSD, findKlayPerToken } from "./priceUpdates";
 import {
