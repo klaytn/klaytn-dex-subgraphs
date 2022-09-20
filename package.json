@@ -8,8 +8,7 @@
   ],
   "scripts": {
     "codegen": "lerna run codegen",
-    "build": "lerna run build",
-    "build-testnet": "lerna run build -- --network baobab",
+    "build": "lerna run build --",
     "create-local": "lerna run create-local",
     "remove-local": "lerna run remove-local",
     "deploy-local": "lerna run deploy-local -- --version-label 0.0.1",
