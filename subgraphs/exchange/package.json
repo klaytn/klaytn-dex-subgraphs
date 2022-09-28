@@ -5,9 +5,9 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "create-local": "graph create klaytn-subgraph/exchange",
-    "remove-local": "graph remove klaytn-subgraph/exchange",
-    "deploy-local": "graph deploy klaytn-subgraph/exchange",
+    "create-local": "graph create --node http://localhost:8020/ klaytn-subgraph/exchange",
+    "remove-local": "graph remove --node http://localhost:8020/ klaytn-subgraph/exchange",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 klaytn-subgraph/exchange",
     "create-remote": "graph create klaytn-subgraph/exchange",
     "remove-remote": "graph remove klaytn-subgraph/exchange",
     "deploy-remote": "graph deploy klaytn-subgraph/exchange"
