@@ -9,12 +9,12 @@
   "scripts": {
     "codegen": "lerna run codegen",
     "build": "lerna run build --",
-    "create-local": "lerna run create-local",
-    "remove-local": "lerna run remove-local",
+    "create-local": "lerna run create-local --",
+    "remove-local": "lerna run remove-local --",
     "deploy-local": "lerna run deploy-local -- --version-label 0.0.1",
-    "create-remote": "lerna run create-remote",
-    "remove-remote": "lerna run remove-remote",
-    "deploy-remote": "lerna run deploy-remote -- --version-label 0.0.1"
+    "create-remote": "lerna run create-remote -- --node http://ipfs1.dev.infra.soramitsu.co.jp:8020",
+    "remove-remote": "lerna run remove-remote -- --node http://ipfs1.dev.infra.soramitsu.co.jp:8020",
+    "deploy-remote": "lerna run deploy-remote -- --node http://ipfs1.dev.infra.soramitsu.co.jp:8020 --version-label 0.0.1"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.29.2",
