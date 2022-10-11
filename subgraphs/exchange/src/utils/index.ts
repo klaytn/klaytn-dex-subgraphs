@@ -7,7 +7,7 @@ import { User, Bundle, LiquidityPosition, LiquidityPositionSnapshot, Pair, Token
 import { DexFactory as FactoryContract } from "../../generated/templates/DexPair/DexFactory";
 
 export let ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
-export let FACTORY_ADDRESS = "0xEB487a3A623E25cAa668B6D199F1aBa9D2380456";
+export let FACTORY_ADDRESS = "0x339ba51a3D65Ad5418aee14b0546088bFe99403c";
 export let KlayOracleAddress = "0xeD074DA2A76FD2Ca90C1508930b4FB4420e413B0";
 
 export let ZERO_BI = BigInt.fromI32(0);
