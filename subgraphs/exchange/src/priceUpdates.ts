@@ -17,7 +17,7 @@ export function getKlayPriceInUSD(): BigDecimal {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-    "0xae3a8a1d877a446b22249d8676afeb16f056b44e", // WKLAY
+    "0x73365f8f27de98d7634be67a167f229b32e7bf6c", // WKLAY
 ]
 
 // minimum liquidity for price to get tracked
