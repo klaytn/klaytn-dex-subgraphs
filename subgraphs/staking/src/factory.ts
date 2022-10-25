@@ -52,11 +52,11 @@ function process(event: NewStakingContract): void {
 
   let userLimit = fetchUserLimit(event.params.staking);
   if (userLimit.gt(ZERO_BI)) {
-    pool.userLimit = convertTokenToDecimal(userLimit, stakeToken.decimals);
+    pool.userLimit = userLimit;
     pool.blocksForUserLimit = fetchNumberBlocksForUserLimit(event.params.staking);
   }
   else {
-    pool.userLimit = ZERO_BD;
+    pool.userLimit = ZERO_BI;
     pool.blocksForUserLimit = ZERO_BI;
   }
 
