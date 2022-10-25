@@ -30,7 +30,7 @@ type Pool @entity {
   precisionFactor: BigInt!
 
   "Limit (if any, in stakeToken)"
-  userLimit: BigDecimal!
+  userLimit: BigInt!
   blocksForUserLimit: BigInt
 
   "Block number"

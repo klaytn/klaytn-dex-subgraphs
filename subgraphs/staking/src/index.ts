@@ -93,8 +93,7 @@ export function handleNewRewardPerBlock(event: NewRewardPerBlock): void {
 
 export function handleNewPoolLimit(event: NewPoolLimit): void {
   let pool = Pool.load(event.address.toHex())!;
-  const rewardToken = getOrCreateToken(Address.fromString(pool.rewardToken));
-  pool.userLimit = convertTokenToDecimal(event.params.poolLimitPerUser, rewardToken.decimals);
+  pool.userLimit = event.params.poolLimitPerUser;
   pool.save();
 }
 
