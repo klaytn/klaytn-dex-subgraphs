@@ -1,16 +1,28 @@
+# better to stick with lts
+FROM node:lts
 
-## First image used for install packages, build
+# node name to deploy subgraph
+ENV node "localhost"
 
-FROM golang:1.14-alpine AS build
-
-RUN apk add --no-cache git openssh-client
-WORKDIR /go/src/github.com/ground-x/project
+# copy current data to container
+WORKDIR /app
 COPY . .
-RUN make build
 
-## Second image used for run 
+# install deps
+RUN yarn install
 
-FROM alpine:3
-COPY --from=build /go/src/github.com/ground-x/project/build_file /bin/build_file
-WORKDIR /go/src/github.com/ground-x/project
-CMD /bin/build_file
+# add node to package.json
+RUN sed "s|lerna run create-remote.*|lerna run create-remote -- --node ${node}\",|g" -i package.json
+RUN sed "s|lerna run remove-remote.*|lerna run remove-remote -- --node ${node}\",|g" -i package.json
+RUN sed "s|lerna run deploy-remote.*|lerna run deploy-remote -- --node ${node} --version-label 0.0.1\"|g" -i package.json
+
+RUN cat package.json
+
+# deploy
+RUN yarn codegen
+RUN yarn build --network baobab
+
+CMD ["/bin/bash"]
+
+# uncomment if you want to build image which will deploy to remote
+#CMD ["/bin/bash", "-c", "yarn create-remote; yarn create-remote"]
