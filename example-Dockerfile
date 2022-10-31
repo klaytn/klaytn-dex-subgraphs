@@ -25,4 +25,4 @@ RUN yarn build --network baobab
 CMD ["/bin/bash"]
 
 # uncomment if you want to build image which will deploy to remote
-#CMD ["/bin/bash", "-c", "yarn create-remote; yarn create-remote"]
+#CMD ["/bin/bash", "-c", "yarn create-remote; yarn deploy-remote --network baobab"]
