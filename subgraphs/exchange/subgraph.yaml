@@ -3,12 +3,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Factory
+    name: DexFactory
     network: baobab
     source:
-      abi: Factory
-      address: "0xEB487a3A623E25cAa668B6D199F1aBa9D2380456"
-      startBlock: 89065284
+      abi: DexFactory
+      address: "0x339ba51a3D65Ad5418aee14b0546088bFe99403c"
+      startBlock: 103936783
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -18,8 +18,8 @@ dataSources:
         - Pair
         - Token
       abis:
-        - name: Factory
-          file: ./abis/Factory.json
+        - name: DexFactory
+          file: ./abis/DexFactory.json
         - name: KIP7
           file: ./abis/KIP7.json
         - name: KIP7NameBytes
@@ -31,10 +31,10 @@ dataSources:
           handler: handlePairCreated
 templates:
   - kind: ethereum/contract
-    name: Pair
+    name: DexPair
     network: baobab
     source:
-      abi: Pair
+      abi: DexPair
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -44,10 +44,10 @@ templates:
         - Pair
         - Token
       abis:
-        - name: Factory
-          file: ./abis/Factory.json
-        - name: Pair
-          file: ./abis/Pair.json
+        - name: DexFactory
+          file: ./abis/DexFactory.json
+        - name: DexPair
+          file: ./abis/DexPair.json
         - name: KlayOracle
           file: ./abis/KlayOracle.json
       eventHandlers:

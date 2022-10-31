@@ -1,14 +1,8 @@
 {
   "baobab": {
-    "Factory": {
-      "address": "0xEB487a3A623E25cAa668B6D199F1aBa9D2380456",
-      "startBlock": 89065284
-    }
-  },
-  "mainnet": {
-    "Factory": {
-      "address": "0xEB487a3A623E25cAa668B6D199F1aBa9D2380456",
-      "startBlock": 89065284
+    "DexFactory": {
+      "address": "0x339ba51a3D65Ad5418aee14b0546088bFe99403c",
+      "startBlock": 103936783
     }
   }
 }

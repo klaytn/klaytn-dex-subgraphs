@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import { Factory, Pair, Token, Bundle } from "../generated/schema";
-import { Pair as PairTemplate } from "../generated/templates";
-import { PairCreated } from "../generated/Factory/Factory";
+import { DexPair as PairTemplate } from "../generated/templates";
+import { PairCreated } from "../generated/DexFactory/DexFactory";
 import {
   FACTORY_ADDRESS,
   KlayOracleAddress,

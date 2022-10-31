@@ -6,9 +6,9 @@ dataSources:
     name: StakingFactory
     network: baobab
     source:
-      address: "0xeB81FCD447957d2AE1fBE7676A4684442b9aE941"
       abi: StakingFactory
-      startBlock: 95008685
+      address: "0x3c1442981f9f14b07A05b4A6fB0c825a8167A8BD"
+      startBlock: 103936820
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

@@ -255,11 +255,6 @@
           "type": "address"
         },
         {
-          "internalType": "bool",
-          "name": "_withUpdate",
-          "type": "bool"
-        },
-        {
           "internalType": "uint256",
           "name": "_bonusMultiplier",
           "type": "uint256"
@@ -362,40 +357,6 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_operator",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_amount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bytes",
-          "name": "_data",
-          "type": "bytes"
-        }
-      ],
-      "name": "onKIP7Received",
-      "outputs": [
-        {
-          "internalType": "bytes4",
-          "name": "",
-          "type": "bytes4"
-        }
-      ],
-      "stateMutability": "pure",
-      "type": "function"
-    },
-    {
       "inputs": [],
       "name": "owner",
       "outputs": [
@@ -459,7 +420,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "stakingTokenTotalAmount",
+          "name": "totalStaked",
           "type": "uint256"
         },
         {
@@ -499,7 +460,7 @@
       "name": "ptn",
       "outputs": [
         {
-          "internalType": "contract PlatformToken",
+          "internalType": "contract IPlatformToken",
           "name": "",
           "type": "address"
         }
@@ -538,11 +499,6 @@
           "internalType": "uint256",
           "name": "_allocPoint",
           "type": "uint256"
-        },
-        {
-          "internalType": "bool",
-          "name": "_withUpdate",
-          "type": "bool"
         }
       ],
       "name": "set",
