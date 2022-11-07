@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  app:
+    build: .
+    volumes:
+      - <path-to-klaytn-dex-contracts>/deployments:/app/deployments
+    environment:
+      DEX_CONTRACT_DEPLOYMENT_DIR: /app/deployments
+      DEX_NETWORK_NAME: baobab
+      DEX_GRAPHNODE_ADMIN_URL:
