@@ -18,6 +18,11 @@ if [ -z $DEX_GRAPHNODE_ADMIN_URL ] ; then
         exit 1
 fi
 
+if [ -z $DEX_GRAPHNODE_IPFS_URL ] ; then
+        echo "Please set DEX_GRAPHNODE_IPFS_URL."
+
+        exit 1
+
 if [ -z $DEX_VERSION_LABEL ] ; then
         echo "Please set DEX_VERSION_LABEL."
 
