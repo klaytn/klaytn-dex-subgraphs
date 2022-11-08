@@ -12,8 +12,8 @@ if [ -z $DEX_NETWORK_NAME ] ; then
         exit 1
 fi
 
-if [ -z $DEX_GRAPHNODE_ADMIN_URL ] ; then
-        echo "Please set DEX_GRAPHNODE_ADMIN_URL."
+if [ -z $DEX_GRAPHNODE_RPC_URL ] ; then
+        echo "Please set DEX_GRAPHNODE_RPC_URL."
 
         exit 1
 fi
