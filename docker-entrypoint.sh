@@ -13,18 +13,19 @@ if [ -z $DEX_NETWORK_NAME ] ; then
 fi
 
 if [ -z $DEX_GRAPHNODE_RPC_URL ] ; then
-        echo "Please set DEX_GRAPHNODE_RPC_URL."
+        echo "Please set DEX_GRAPHNODE_RPC_URL"
 
         exit 1
 fi
 
 if [ -z $DEX_GRAPHNODE_IPFS_URL ] ; then
-        echo "Please set DEX_GRAPHNODE_IPFS_URL."
+        echo "Please set DEX_GRAPHNODE_IPFS_URL"
 
         exit 1
+fi
 
 if [ -z $DEX_VERSION_LABEL ] ; then
-        echo "Please set DEX_VERSION_LABEL."
+        echo "Please set DEX_VERSION_LABEL"
 
         exit 1
 fi
