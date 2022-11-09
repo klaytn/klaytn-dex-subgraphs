@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { BigInt, BigDecimal, store } from "@graphprotocol/graph-ts";
+import { BigInt, BigDecimal, store, dataSource } from "@graphprotocol/graph-ts";
 import {
   Pair,
   Token,
@@ -15,7 +15,6 @@ import { updatePairDayData, updateTokenDayData, updateFactoryDayData, updatePair
 import { getKlayPriceInUSD, getTrackedVolumeUSD, getTrackedLiquidityUSD, findKlayPerToken } from "./priceUpdates";
 import {
   ADDRESS_ZERO,
-  FACTORY_ADDRESS,
   KlayOracleAddress,
   ONE_BI,
   ZERO_BD,
@@ -35,8 +34,6 @@ export function handleTransfer(event: Transfer): void {
   if (event.params.to.toHex() == ADDRESS_ZERO && event.params.value.equals(BigInt.fromI32(1000))) {
     return;
   }
-
-  let factory = Factory.load(FACTORY_ADDRESS)!;
   let transactionHash = event.transaction.hash.toHexString();
 
   // user stats
@@ -214,7 +211,10 @@ export function handleSync(event: Sync): void {
   let pair = Pair.load(event.address.toHex())!;
   let token0 = Token.load(pair.token0)!;
   let token1 = Token.load(pair.token1)!;
-  let factory = Factory.load(FACTORY_ADDRESS)!;
+
+  let context = dataSource.context()
+  let factoryAddress = context.getString('DexFactory')
+  let factory = Factory.load(factoryAddress)!;
   
   // reset factory liquidity by subtracting onluy tarcked liquidity
   factory.totalLiquidityKLAY = factory.totalLiquidityKLAY.minus(pair.trackedReserveKLAY as BigDecimal);
@@ -235,11 +235,11 @@ export function handleSync(event: Sync): void {
   bundle.klayPrice = getKlayPriceInUSD();
   bundle.save();
 
-  token0.derivedKLAY = findKlayPerToken(token0 as Token);
+  token0.derivedKLAY = findKlayPerToken(token0 as Token, factoryAddress);
   token0.derivedUSD = token0.derivedKLAY.times(bundle.klayPrice);
   token0.save();
  
-  token1.derivedKLAY = findKlayPerToken(token1 as Token);;
+  token1.derivedKLAY = findKlayPerToken(token1 as Token, factoryAddress);
   token1.derivedUSD = token1.derivedKLAY.times(bundle.klayPrice);
   token1.save();
 
@@ -281,7 +281,9 @@ export function handleMint(event: Mint): void {
   let mint = MintEvent.load(mints[mints.length - 1])!;
 
   let pair = Pair.load(event.address.toHex())!;
-  let factory = Factory.load(FACTORY_ADDRESS)!;
+  let context = dataSource.context()
+  let factoryAddress = context.getString('DexFactory')
+  let factory = Factory.load(factoryAddress)!;
 
   let token0 = Token.load(pair.token0)!;
   let token1 = Token.load(pair.token1)!;
@@ -324,7 +326,7 @@ export function handleMint(event: Mint): void {
 
   updatePairDayData(event);
   updatePairHourData(event);
-  updateFactoryDayData(event);
+  updateFactoryDayData(event, factoryAddress);
   updateTokenDayData(token0 as Token, event);
   updateTokenDayData(token1 as Token, event);
 }
@@ -335,7 +337,9 @@ export function handleBurn(event: Burn): void {
   let burn = BurnEvent.load(burns[burns.length - 1])!;
 
   let pair = Pair.load(event.address.toHex())!;
-  let factory = Factory.load(FACTORY_ADDRESS)!;
+  let context = dataSource.context()
+  let factoryAddress = context.getString('DexFactory')
+  let factory = Factory.load(factoryAddress)!;
 
   //update token info
   let token0 = Token.load(pair.token0)!;
@@ -379,7 +383,7 @@ export function handleBurn(event: Burn): void {
 
   updatePairDayData(event);
   updatePairHourData(event);
-  updateFactoryDayData(event);
+  updateFactoryDayData(event, factoryAddress);
   updateTokenDayData(token0 as Token, event);
   updateTokenDayData(token1 as Token, event);
 }
@@ -445,7 +449,9 @@ export function handleSwap(event: Swap): void {
   pair.save();
 
   // update global values, only used tracked amounts for volume
-  let factory = Factory.load(FACTORY_ADDRESS) as Factory;
+  let context = dataSource.context()
+  let factoryAddress = context.getString('DexFactory')
+  let factory = Factory.load(factoryAddress)  as Factory;
   factory.totalVolumeUSD = factory.totalVolumeUSD.plus(trackedAmountUSD)
   factory.totalVolumeKLAY = factory.totalVolumeKLAY.plus(trackedAmountKLAY)
   factory.untrackedVolumeUSD = factory.untrackedVolumeUSD.plus(derivedAmountUSD)
@@ -502,7 +508,7 @@ export function handleSwap(event: Swap): void {
   // update day entities
   let pairDayData = updatePairDayData(event);
   let pairHourData = updatePairHourData(event);
-  let factoryDayData = updateFactoryDayData(event);
+  let factoryDayData = updateFactoryDayData(event, factoryAddress);
   let token0DayData = updateTokenDayData(token0 as Token, event);
   let token1DayData = updateTokenDayData(token1 as Token, event);
   
