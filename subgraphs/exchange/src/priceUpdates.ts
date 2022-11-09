@@ -2,9 +2,8 @@ import { BigDecimal, Address, Bytes } from "@graphprotocol/graph-ts/index";
 import { KlayOracle } from "../generated/templates/DexPair/KlayOracle";
 import { Pair, Token, Bundle } from "../generated/schema";
 import { log } from '@graphprotocol/graph-ts';
-import { ONE_BD, ZERO_BD, KlayOracleAddress, getFactoryContract, ADDRESS_ZERO, USDT_PRECISION } from "./utils";
-
-const WKLAY_ADDRESS = "0x73365f8f27de98d7634be67a167f229b32e7bf6c"
+import { ONE_BD, ZERO_BD, getFactoryContract, ADDRESS_ZERO, USDT_PRECISION } from "./utils";
+import { WKLAY_ADDRESS, KlayOracleAddress } from "./utils/config";
 
 export function getKlayPriceInUSD(): BigDecimal {
     let contract = KlayOracle.bind(Address.fromString(KlayOracleAddress));

@@ -1,7 +1,8 @@
 /* eslint-disable prefer-const */
 import { BigInt, ethereum, BigDecimal } from "@graphprotocol/graph-ts";
 import { Pair, Token, Factory, FactoryDayData, PairDayData, PairHourData, TokenDayData, Bundle } from "../generated/schema";
-import { ONE_BI, ZERO_BD, ZERO_BI, KlayOracleAddress } from "./utils";
+import { ONE_BI, ZERO_BD, ZERO_BI } from "./utils";
+import { KlayOracleAddress } from "./utils/config";
 
 export function updateFactoryDayData(event: ethereum.Event, factoryAddress: string): FactoryDayData {
   let factory = Factory.load(factoryAddress) as Factory;

@@ -4,7 +4,6 @@ import { Factory, Pair, Token, Bundle } from "../generated/schema";
 import { DexPair as PairTemplate } from "../generated/templates";
 import { PairCreated } from "../generated/DexFactory/DexFactory";
 import {
-  KlayOracleAddress,
   ZERO_BD,
   ZERO_BI,
   ONE_BI,
@@ -13,6 +12,7 @@ import {
   fetchTokenDecimals,
   fetchTokenTotalSupply,
 } from "./utils";
+import { KlayOracleAddress } from "./utils/config";
 
 export function handlePairCreated(event: PairCreated): void {
   let factoryAddress = dataSource.address().toHex();

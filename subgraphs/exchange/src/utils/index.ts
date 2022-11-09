@@ -5,9 +5,9 @@ import { KIP7NameBytes } from "../../generated/DexFactory/KIP7NameBytes";
 import { KIP7SymbolBytes } from "../../generated/DexFactory/KIP7SymbolBytes";
 import { User, Bundle, LiquidityPosition, LiquidityPositionSnapshot, Pair, Token } from '../../generated/schema';
 import { DexFactory as FactoryContract } from "../../generated/templates/DexPair/DexFactory";
+import { KlayOracleAddress } from "./config";
 
 export let ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
-export let KlayOracleAddress = "0xeD074DA2A76FD2Ca90C1508930b4FB4420e413B0";
 
 export let ZERO_BI = BigInt.fromI32(0);
 export let ONE_BI = BigInt.fromI32(1);

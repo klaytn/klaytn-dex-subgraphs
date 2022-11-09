@@ -15,7 +15,6 @@ import { updatePairDayData, updateTokenDayData, updateFactoryDayData, updatePair
 import { getKlayPriceInUSD, getTrackedVolumeUSD, getTrackedLiquidityUSD, findKlayPerToken } from "./priceUpdates";
 import {
   ADDRESS_ZERO,
-  KlayOracleAddress,
   ONE_BI,
   ZERO_BD,
   BI_18,
@@ -24,6 +23,7 @@ import {
   createLiquidityPosition,
   createLiquiditySnapshot
 } from "./utils";
+import { KlayOracleAddress } from "./utils/config";
 
 function isCompleteMint(mintId: string): boolean {
   return MintEvent.load(mintId)!.sender !== null // sufficient checks
