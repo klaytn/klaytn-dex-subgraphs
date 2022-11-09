@@ -1,8 +1,8 @@
 /* eslint-disable prefer-const */
-import { log } from "@graphprotocol/graph-ts";
+import { log, dataSource } from "@graphprotocol/graph-ts";
 import { Factory, Pool } from "../generated/schema";
 import { NewStakingContract } from "../generated/StakingFactory/StakingFactory";
-import { convertTokenToDecimal, ZERO_BI, ONE_BI, ZERO_BD, FACTORY_ADDRESS } from "./utils";
+import { convertTokenToDecimal, ZERO_BI, ONE_BI } from "./utils";
 import { StakingPool as StakingPoolTemplate } from "../generated/templates";
 import { getOrCreateToken } from "./utils/kip7";
 import {
@@ -17,9 +17,10 @@ import {
 } from "./utils/pool";
 
 export function handleNewStakingContract(event: NewStakingContract): void {
-  let factory = Factory.load(FACTORY_ADDRESS);
+  let factoryAddress = dataSource.address().toHex()
+  let factory = Factory.load(factoryAddress);
   if (factory === null) {
-    factory = new Factory(FACTORY_ADDRESS);
+    factory = new Factory(factoryAddress);
     factory.totalPools = ZERO_BI;
     factory.save();
   }

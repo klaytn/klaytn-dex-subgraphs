@@ -15,7 +15,6 @@ export function getOrCreateUser(address: Address, pool: Pool, block: ethereum.Bl
     user.amount = BI_ZERO;
     user.rewardDebt = BI_ZERO;
     user.harvested = BI_ZERO;
-    pool.userCount = pool.userCount.plus(BI_ONE);
     pool.totalUsersCount = pool.totalUsersCount.plus(BI_ONE);
     pool.save();
   }

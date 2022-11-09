@@ -1,10 +1,9 @@
 /* eslint-disable prefer-const */
+import { log, dataSource, DataSourceContext } from "@graphprotocol/graph-ts";
 import { Factory, Pair, Token, Bundle } from "../generated/schema";
 import { DexPair as PairTemplate } from "../generated/templates";
 import { PairCreated } from "../generated/DexFactory/DexFactory";
 import {
-  FACTORY_ADDRESS,
-  KlayOracleAddress,
   ZERO_BD,
   ZERO_BI,
   ONE_BI,
@@ -13,12 +12,14 @@ import {
   fetchTokenDecimals,
   fetchTokenTotalSupply,
 } from "./utils";
+import { KlayOracleAddress } from "./utils/config";
 
 export function handlePairCreated(event: PairCreated): void {
-  let factory = Factory.load(FACTORY_ADDRESS);
+  let factoryAddress = dataSource.address().toHex();
+  let factory = Factory.load(factoryAddress);
 
   if (factory === null) {
-    factory = new Factory(FACTORY_ADDRESS);
+    factory = new Factory(factoryAddress);
     factory.totalPairs = ZERO_BI;
     factory.totalTokens = ZERO_BI;
     factory.totalTransactions = ZERO_BI;
@@ -103,6 +104,12 @@ export function handlePairCreated(event: PairCreated): void {
 
   // Entities
   factory.save();
-
-  PairTemplate.create(event.params.pair);
+  log.info("[Factory] Pool created {} with token0 {} and token1 {}", [
+    event.params.pair.toHex(),
+    event.params.token0.toHex(),
+    event.params.token1.toHex(),
+]);
+  let context = new DataSourceContext();
+  context.setString('DexFactory', factoryAddress)
+  PairTemplate.createWithContext(event.params.pair, context);
 }

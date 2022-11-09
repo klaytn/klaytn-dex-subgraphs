@@ -1,10 +1,10 @@
-import { BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { BigInt, ethereum, Address } from "@graphprotocol/graph-ts";
 import { Pool } from "../generated/schema";
 import { ADDRESS_ZERO, BI_ZERO } from "./utils";
 import { getOrCreateFarming } from "./farmingUpdates";
 
-export function getOrCreatePool(pid: BigInt, block: ethereum.Block): Pool {
-  const farming = getOrCreateFarming(block);
+export function getOrCreatePool(pid: BigInt, block: ethereum.Block, farmingAddress: Address): Pool {
+  const farming = getOrCreateFarming(block, farmingAddress);
 
   let pool = Pool.load(pid.toString());
 
