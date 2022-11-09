@@ -95,6 +95,9 @@ export function handleDeposit(event: Deposit): void {
           pool.harvested = pool.harvested.plus(pending)
         }
     }
+    if (user.amount.equals(BI_ZERO)) {
+        pool.userCount = pool.userCount.plus(BI_ONE);
+    }
     user.amount = user.amount.plus(event.params.amount);
     user.rewardDebt = user.amount
         .times(pool.accPtnPerShare)
