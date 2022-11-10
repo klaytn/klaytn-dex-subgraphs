@@ -2,9 +2,8 @@ import { BigDecimal, Address, Bytes } from "@graphprotocol/graph-ts/index";
 import { KlayOracle } from "../generated/templates/DexPair/KlayOracle";
 import { Pair, Token, Bundle } from "../generated/schema";
 import { log } from '@graphprotocol/graph-ts';
-import { ONE_BD, ZERO_BD, KlayOracleAddress, factoryContract, ADDRESS_ZERO, USDT_PRECISION } from "./utils";
-
-const WKLAY_ADDRESS = "0x73365f8f27de98d7634be67a167f229b32e7bf6c"
+import { ONE_BD, ZERO_BD, getFactoryContract, ADDRESS_ZERO, USDT_PRECISION } from "./utils";
+import { WKLAY_ADDRESS, KlayOracleAddress } from "./utils/config";
 
 export function getKlayPriceInUSD(): BigDecimal {
     let contract = KlayOracle.bind(Address.fromString(KlayOracleAddress));
@@ -17,7 +16,7 @@ export function getKlayPriceInUSD(): BigDecimal {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-    "0x73365f8f27de98d7634be67a167f229b32e7bf6c", // WKLAY
+    WKLAY_ADDRESS.toLowerCase(), // WKLAY
 ]
 
 // minimum liquidity for price to get tracked
@@ -27,12 +26,13 @@ let MINIMUM_LIQUIDITY_THRESHOLD_KLAY = BigDecimal.fromString('1')
  * Search through graph to find derived BNB per token.
  * @todo update to be derived BNB (add stablecoin estimates)
  **/
- export function findKlayPerToken(token: Token): BigDecimal {
-    let res = token.id == WKLAY_ADDRESS;
+ export function findKlayPerToken(token: Token, factoryAddress: string): BigDecimal {
+    let res = token.id == WKLAY_ADDRESS.toLowerCase();
     log.info('ID Match {}:', [res.toString()]); 
-    if (token.id == WKLAY_ADDRESS) { 
+    if (token.id == WKLAY_ADDRESS.toLowerCase()) { 
       return ONE_BD;
     }
+    let factoryContract = getFactoryContract(factoryAddress);
     // loop through whitelist and check if paired with any
     for (let i = 0; i < WHITELIST.length; ++i) {
       let pairAddress = factoryContract.getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]));

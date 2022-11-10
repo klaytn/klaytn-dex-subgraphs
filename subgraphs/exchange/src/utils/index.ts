@@ -5,10 +5,9 @@ import { KIP7NameBytes } from "../../generated/DexFactory/KIP7NameBytes";
 import { KIP7SymbolBytes } from "../../generated/DexFactory/KIP7SymbolBytes";
 import { User, Bundle, LiquidityPosition, LiquidityPositionSnapshot, Pair, Token } from '../../generated/schema';
 import { DexFactory as FactoryContract } from "../../generated/templates/DexPair/DexFactory";
+import { KlayOracleAddress } from "./config";
 
 export let ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
-export let FACTORY_ADDRESS = "0x339ba51a3D65Ad5418aee14b0546088bFe99403c";
-export let KlayOracleAddress = "0xeD074DA2A76FD2Ca90C1508930b4FB4420e413B0";
 
 export let ZERO_BI = BigInt.fromI32(0);
 export let ONE_BI = BigInt.fromI32(1);
@@ -17,7 +16,9 @@ export let ONE_BD = BigDecimal.fromString("1");
 export let USDT_PRECISION = BigDecimal.fromString("1000000");
 export let BI_18 = BigInt.fromI32(18);
 
-export let factoryContract = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS));
+export function getFactoryContract(factoryAddress: string): FactoryContract {
+  return FactoryContract.bind(Address.fromString(factoryAddress));
+}
 
 export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
   let bd = BigDecimal.fromString("1");
