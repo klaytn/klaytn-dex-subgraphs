@@ -16,7 +16,7 @@ import { getOrCreateUser } from "./userUpdates";
 import { ACC_PRECISION, BI_ONE, BI_ZERO } from "./utils";
 
 export function handleAddPool(event: AddPool): void {
-    log.info("[Farming] Add Pool {} {} {} {}", [
+    log.info("[Farming] Add Pool with pid {} {} {} {} {}", [
         event.params.pid.toString(),
         event.params.allocPoint.toString(),
         event.params.token.toHex(),
@@ -164,7 +164,7 @@ export function handleEmergencyWithdraw(event: EmergencyWithdraw): void {
 }
 
 export function handleUpdateRewardPerBlock(event: UpdateRewardPerBlock): void {
-    log.info("[Farming] Update Reward Rate {} {} {}", [
+    log.info("[Farming] Update Reward Rate {}", [
         event.params.rewardPerBlock.toString(),
     ]);
 
@@ -175,7 +175,7 @@ export function handleUpdateRewardPerBlock(event: UpdateRewardPerBlock): void {
 }
 
 export function handleUpdatePoolMultiplier(event: UpdatePoolMultiplier): void {
-    log.info("[Farming] Update Pool Multiplier {} {} {} {}", [
+    log.info("[Farming] Update Pool Multiplier {} {}", [
         event.params.pid.toString(),
         event.params.multiplier.toString(),
     ]);
