@@ -3,8 +3,11 @@ import { KlayOracle } from "../generated/templates/DexPair/KlayOracle";
 import { Pair, Token, Bundle } from "../generated/schema";
 import { log } from '@graphprotocol/graph-ts';
 import { ONE_BD, ZERO_BD, getFactoryContract, ADDRESS_ZERO, USDT_PRECISION } from "./utils";
-import { WKLAY_ADDRESS, KlayOracleAddress } from "./utils/config";
+import { WKLAY_ADDRESS, KlayOracleAddress, whitelistedAddresses } from "./utils/config";
 
+/**
+ * @todo update to be derived WKLAY (add stablecoin estimates) (optional)
+*/
 export function getKlayPriceInUSD(): BigDecimal {
     let contract = KlayOracle.bind(Address.fromString(KlayOracleAddress));
     let priceResult = contract.try_valueFor(Bytes.fromHexString("0x5d9add3300000000000000000000000000000000000000000000000000000000"))
@@ -14,17 +17,11 @@ export function getKlayPriceInUSD(): BigDecimal {
     return ZERO_BD;
 }
 
-// token where amounts should contribute to tracked volume and liquidity
-let WHITELIST: string[] = [
-    WKLAY_ADDRESS.toLowerCase(), // WKLAY
-]
-
 // minimum liquidity for price to get tracked
 let MINIMUM_LIQUIDITY_THRESHOLD_KLAY = BigDecimal.fromString('1')
 
 /**
- * Search through graph to find derived BNB per token.
- * @todo update to be derived BNB (add stablecoin estimates)
+ * Search through graph to find derived WKLAY per token.
  **/
  export function findKlayPerToken(token: Token, factoryAddress: string): BigDecimal {
     let res = token.id == WKLAY_ADDRESS.toLowerCase();
@@ -33,9 +30,9 @@ let MINIMUM_LIQUIDITY_THRESHOLD_KLAY = BigDecimal.fromString('1')
       return ONE_BD;
     }
     let factoryContract = getFactoryContract(factoryAddress);
-    // loop through whitelist and check if paired with any
-    for (let i = 0; i < WHITELIST.length; ++i) {
-      let pairAddress = factoryContract.getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]));
+    // loop through whitelistedAddresses and check if paired with any
+    for (let i = 0; i < whitelistedAddresses.length; ++i) {
+      let pairAddress = factoryContract.getPair(Address.fromString(token.id), Address.fromString(whitelistedAddresses[i]));
       if (pairAddress.toHex() != ADDRESS_ZERO) {
         let pair = Pair.load(pairAddress.toHex())!;
         if (pair.token0 == token.id && pair.reserveKLAY.gt(MINIMUM_LIQUIDITY_THRESHOLD_KLAY)) {
@@ -68,17 +65,17 @@ let MINIMUM_LIQUIDITY_THRESHOLD_KLAY = BigDecimal.fromString('1')
     let price1 = token1.derivedKLAY.times(bundle.klayPrice);
   
     // both are whitelist tokens, take average of both amounts
-    if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
+    if (whitelistedAddresses.includes(token0.id) && whitelistedAddresses.includes(token1.id)) {
       return tokenAmount0.times(price0).plus(tokenAmount1.times(price1)).div(BigDecimal.fromString("2"));
     }
   
     // take full value of the whitelisted token amount
-    if (WHITELIST.includes(token0.id) && !WHITELIST.includes(token1.id)) {
+    if (whitelistedAddresses.includes(token0.id) && !whitelistedAddresses.includes(token1.id)) {
       return tokenAmount0.times(price0);
     }
   
     // take full value of the whitelisted token amount
-    if (!WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
+    if (!whitelistedAddresses.includes(token0.id) && whitelistedAddresses.includes(token1.id)) {
       return tokenAmount1.times(price1);
     }
   
@@ -103,17 +100,17 @@ let MINIMUM_LIQUIDITY_THRESHOLD_KLAY = BigDecimal.fromString('1')
   let price1 = token1.derivedKLAY.times(bundle.klayPrice);
 
   // both are whitelist tokens, take average of both amounts
-  if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
+  if (whitelistedAddresses.includes(token0.id) && whitelistedAddresses.includes(token1.id)) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1));
   }
 
   // take double value of the whitelisted token amount
-  if (WHITELIST.includes(token0.id) && !WHITELIST.includes(token1.id)) {
+  if (whitelistedAddresses.includes(token0.id) && !whitelistedAddresses.includes(token1.id)) {
     return tokenAmount0.times(price0).times(BigDecimal.fromString('2'));
   }
 
   // take double value of the whitelisted token amount
-  if (!WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
+  if (!whitelistedAddresses.includes(token0.id) && whitelistedAddresses.includes(token1.id)) {
     return tokenAmount1.times(price1).times(BigDecimal.fromString('2'));
   }
 

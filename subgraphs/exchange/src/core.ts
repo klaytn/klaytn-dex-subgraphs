@@ -216,7 +216,7 @@ export function handleSync(event: Sync): void {
   let factoryAddress = context.getString('DexFactory')
   let factory = Factory.load(factoryAddress)!;
   
-  // reset factory liquidity by subtracting onluy tarcked liquidity
+  // reset factory liquidity by subtracting only tracked liquidity
   factory.totalLiquidityKLAY = factory.totalLiquidityKLAY.minus(pair.trackedReserveKLAY as BigDecimal);
 
   // reset token total liquidity amounts
@@ -401,7 +401,7 @@ export function handleSwap(event: Swap): void {
   let amount0Total = amount0Out.plus(amount0In);
   let amount1Total = amount1Out.plus(amount1In);
 
-  // BNB/USD prices
+  // WKLAY/USD prices
   let bundle = Bundle.load(KlayOracleAddress)!;
 
   // get total amounts of derived USD and KLAY for tracking
