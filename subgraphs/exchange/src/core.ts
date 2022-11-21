@@ -216,7 +216,7 @@ export function handleSync(event: Sync): void {
   let factoryAddress = context.getString('DexFactory')
   let factory = Factory.load(factoryAddress)!;
   
-  // reset factory liquidity by subtracting onluy tracked liquidity
+  // reset factory liquidity by subtracting only tracked liquidity
   factory.totalLiquidityKLAY = factory.totalLiquidityKLAY.minus(pair.trackedReserveKLAY as BigDecimal);
 
   // reset token total liquidity amounts
